@@ -15,10 +15,6 @@ def get_news():
         print(f"Error fetching news: {e}")
         return {"articles": []}
 
-data = get_news()
-
-print(data)
-
 def print_news(data):
     try:
         articles = data["articles"]

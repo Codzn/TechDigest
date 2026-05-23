@@ -4,7 +4,9 @@ def filter_news(data):
     filtered_news = []
     try:
         articles = data["articles"]
-        for article in articles: 
+        for article in articles:
+            if article["title"] is None or article["description"] is None:
+                continue
             if any(keyword in article["title"] for keyword in SI_KEYWORDS) or any(keyword in article["description"] for keyword in SI_KEYWORDS):
                 filtered_news.append(article)
     except KeyError:

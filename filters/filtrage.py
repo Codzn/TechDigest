@@ -1,6 +1,11 @@
 SI_KEYWORDS = ["AI", "Artificial Intelligence", "Machine Learning", "Deep Learning", "Neural Networks", "Natural Language Processing", "Computer Vision", "Robotics", "Automation", "Data Science", "Big Data", "Cloud Computing", "Edge Computing", "Quantum Computing", "Cybersecurity", "Ethics in AI", "AI in Healthcare", "AI in Finance", "AI in Education", "AI in Transportation", "PLM", "ERP", "CRM", "Supply Chain Management", "Manufacturing Execution Systems", "MES", "Digital Twin", "Industry 4.0", "Smart Factory", "IoT in Manufacturing", "Predictive Maintenance", "AI in Manufacturing"]
 
 def filter_news(data):
+    """
+    Récupère les articles renvoyés par l'API.
+
+    Retour : Les articles filtrés dans une liste en fonction des mots-clés définis dans SI_KEYWORDS.
+    """
     filtered_news = []
     try:
         articles = data["articles"]

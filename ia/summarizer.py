@@ -9,6 +9,10 @@ genai.configure(api_key=CLE_GEMINI)
 
 generator = genai.GenerativeModel("gemini-1.5-flash")
 def summarize_article(articles):
+    """
+    Récupère : Les articles filtrés dans une liste en fonction des mots-clés définis dans SI_KEYWORDS.
+    Retour : Un résumé des articles sous forme de texte. 
+    """
     texte = ""
     resume = ""
     prompt = "Tu es un expert en Systèmes d'Information. Pour chaque article ci-dessous, génère un titre en gras suivi d'un court paragraphe de résumé en français."

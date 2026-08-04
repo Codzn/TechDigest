@@ -7,6 +7,12 @@ load_dotenv()
 NEWS_API_KEY = os.getenv("NEWS_API")
 
 def get_news():
+    """
+    Récupère les acutalités depuis NewsApi.
+
+    Retour : 
+        dict : Un dictionnaire contenant les articles d'actualités.
+    """
     try:
         date_hier = (datetime.date.today() - datetime.timedelta(days=1)).isoformat()
         keywords = (

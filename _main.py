@@ -1,5 +1,5 @@
-from filters.filtrage import filter_news
-from collector.news_collector import get_news
+from collectors.news_collector import *
+from filters.filtrage import *
 
 if __name__ == "__main__":
     data = get_news()

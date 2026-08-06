@@ -1,6 +1,8 @@
-import google.generativeai as genai
+import google.genai as genai
 import os
 from dotenv import load_dotenv
+
+from collectors.news_collector import get_news
 
 load_dotenv()
 
@@ -23,3 +25,5 @@ def summarize_article(articles):
     
     resume = generator.generate_content(prompt + "\n" + texte)
     return resume
+
+print(summarize_article(get_news()))

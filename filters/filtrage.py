@@ -1,6 +1,18 @@
 from collectors.news_collector import get_news
 
-SI_KEYWORDS = ["AI", "Artificial Intelligence", "Machine Learning", "Deep Learning", "Neural Networks", "Natural Language Processing", "Computer Vision", "Robotics", "Automation", "Data Science", "Big Data", "Cloud Computing", "Edge Computing", "Quantum Computing", "Cybersecurity", "Ethics in AI", "AI in Healthcare", "AI in Finance", "AI in Education", "AI in Transportation", "PLM", "ERP", "CRM", "Supply Chain Management", "Manufacturing Execution Systems", "MES", "Digital Twin", "Industry 4.0", "Smart Factory", "IoT in Manufacturing", "Predictive Maintenance", "AI in Manufacturing"]
+SI_KEYWORDS = ["artificial intelligence", "machine learning", "deep learning", "neural networks", "natural language processing", "computer vision", "robotics", "automation", "data science", "big data", "cloud computing", "edge computing", "quantum computing", "cybersecurity", "ethics in ai", "ai in healthcare", "ai in finance", "ai in education", "ai in transportation", "plm", "erp", "crm", "supply chain management", "manufacturing execution systems", "mes", "digital twin", "industry 4.0", "smart factory", "iot in manufacturing", "predictive maintenance", "ai in manufacturing"]
+
+
+def clean_text(text):
+    """
+    Récupère : Un texte brut.
+    Retour : Le texte nettoyé en supprimant les caractères spéciaux et les espaces inutiles.
+    """
+    if text is None:
+        return ""
+    # Supprimer les caractères spéciaux et les espaces inutiles
+    cleaned_text = text.replace("\n", " ").replace("\r", " ").strip()
+    return cleaned_text
 
 def filter_news(data):
     """

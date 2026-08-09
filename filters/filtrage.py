@@ -12,9 +12,19 @@ def clean_text(text):
     if text is None:
         return ""
     # Supprimer les caractères spéciaux et les espaces inutiles
-    cleaned_text = re.sub(r'[\n\r\-]+', '', text)
+    cleaned_text = re.sub(r'[\n\r\-]+', ' ', text)
     cleaned_final = cleaned_text.lower().strip()
     return cleaned_final
+
+def calculate_score(article):
+    score = 0
+    for keyword in SI_KEYWORDS:
+        if keyword in article["title"]:
+            score += 2  # Plus de poids pour les mots-clés dans le titre
+        if keyword in article["description"]:
+            score += 1  # Moins de poids pour les mots-clés dans la description
+
+    return score
 
 def filter_news(data):
     """
@@ -28,12 +38,17 @@ def filter_news(data):
         for article in articles:
             article["title"] = clean_text(article["title"])
             article["description"] = clean_text(article["description"])
-            if article["title"] is None or article["description"] is None:
+            if article["title"] == "" or article["description"] == "":
                 continue
-            if any(keyword in article["title"] for keyword in SI_KEYWORDS) or any(keyword in article["description"] for keyword in SI_KEYWORDS):
+            score = calculate_score(article)
+            if score > 0:
                 filtered_news.append(article)
+                print(article["title"])
+                print(score)
+                print("----------------")   
     except KeyError:
         print("Error: Invalid data format")
     return filtered_news
 
-print(filter_news(get_news()))
+print("Filtrage des actualités en cours...")
+filtered_news = filter_news(get_news())

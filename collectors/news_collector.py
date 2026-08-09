@@ -40,8 +40,6 @@ def print_news(data):
     except Exception as e:
         print(f"Error printing news: {e}")
 
-print_news(get_news())
-
 """
 Retourne bien le titre et la description de chaque article, ainsi que l'URL de l'article.
 """

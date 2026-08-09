@@ -1,7 +1,7 @@
 from collectors.news_collector import get_news
 import re
 
-SI_KEYWORDS = ["artificial intelligence", "machine learning", "deep learning", "neural networks", "natural language processing", "computer vision", "robotics", "automation", "data science", "big data", "cloud computing", "edge computing", "quantum computing", "cybersecurity", "ethics in ai", "ai in healthcare", "ai in finance", "ai in education", "ai in transportation", "plm", "erp", "crm", "supply chain management", "manufacturing execution systems", "mes", "digital twin", "industry 4.0", "smart factory", "iot in manufacturing", "predictive maintenance", "ai in manufacturing"]
+SI_KEYWORDS = {"artificial intelligence" : 2, "machine learning" : 2, "deep learning" : 2, "neural networks" : 2, "natural language processing" : 2, "computer vision" : 2, "robotics" : 1, "automation" : 2, "data science" : 2, "big data" : 2, "cloud computing" : 2, "edge computing" : 2, "quantum computing" : 2, "cybersecurity" : 2,  "ai in finance" : 2, "plm" : 3, "erp" : 3, "crm" : 3, "supply chain management" : 1, "manufacturing execution systems" : 1, "mes" : 1, "digital twin" : 1, "industry 4.0" : 1, "smart factory" : 1, "iot in manufacturing" : 1, "predictive maintenance" : 1}
 
 
 def clean_text(text):
@@ -20,9 +20,9 @@ def calculate_score(article):
     score = 0
     for keyword in SI_KEYWORDS:
         if keyword in article["title"]:
-            score += 2  # Plus de poids pour les mots-clés dans le titre
+            score += SI_KEYWORDS[keyword]
         if keyword in article["description"]:
-            score += 1  # Moins de poids pour les mots-clés dans la description
+            score += SI_KEYWORDS[keyword]
 
     return score
 
@@ -41,7 +41,7 @@ def filter_news(data):
             if article["title"] == "" or article["description"] == "":
                 continue
             score = calculate_score(article)
-            if score > 0:
+            if score > 1:  # Seuil de score pour inclure l'article dans les résultats filtrés
                 filtered_news.append(article)
                 print(article["title"])
                 print(score)
@@ -51,4 +51,4 @@ def filter_news(data):
     return filtered_news
 
 print("Filtrage des actualités en cours...")
-filtered_news = filter_news(get_news())
+filter_news(get_news())

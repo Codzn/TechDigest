@@ -18,10 +18,13 @@ def clean_text(text):
 
 def calculate_score(article):
     score = 0
+    title = article["title"].lower()
+    description = article["description"].lower()
+
     for keyword in SI_KEYWORDS:
-        if keyword in article["title"]:
+        if re.search(keyword, title):
             score += SI_KEYWORDS[keyword]
-        if keyword in article["description"]:
+        if re.search(keyword, description):
             score += SI_KEYWORDS[keyword]
 
     return score

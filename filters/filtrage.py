@@ -18,14 +18,14 @@ def clean_text(text):
 
 def calculate_score(article):
     score = 0
-    title = article["title"].lower()
-    description = article["description"].lower()
-
-    for keyword in SI_KEYWORDS:
-        if re.search(keyword, title):
-            score += SI_KEYWORDS[keyword]
-        if re.search(keyword, description):
-            score += SI_KEYWORDS[keyword]
+    title = article["title"]
+    description = article["description"]
+    for keyword, points in SI_KEYWORDS.items():
+        pattern = re.compile(r'\b' + re.escape(keyword) + r'\b', re.IGNORECASE)
+        if re.search(pattern, title):
+            score += points
+        if re.search(pattern, description):
+            score += points
 
     return score
 

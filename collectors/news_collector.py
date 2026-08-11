@@ -43,4 +43,7 @@ def print_news(data):
 """
 Retourne bien le titre et la description de chaque article, ainsi que l'URL de l'article.
 """
+print("Récupération des actualités en cours...")
+news_data = get_news()
+print_news(news_data)
 

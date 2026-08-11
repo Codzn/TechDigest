@@ -23,7 +23,7 @@ def calculate_score(article):
     for keyword, points in SI_KEYWORDS.items():
         pattern = re.compile(r'\b' + re.escape(keyword) + r'\b', re.IGNORECASE)
         if re.search(pattern, title):
-            score += points
+            score += points * 2  # Les mots-clés dans le titre ont un poids double
         if re.search(pattern, description):
             score += points
 

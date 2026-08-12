@@ -1,8 +1,8 @@
 from collectors.news_collector import get_news
 import re
+import json
 
 SI_KEYWORDS = {"artificial intelligence" : 2, "machine learning" : 2, "deep learning" : 2, "neural networks" : 2, "natural language processing" : 2, "computer vision" : 2, "robotics" : 1, "automation" : 2, "data science" : 2, "big data" : 2, "cloud computing" : 2, "edge computing" : 2, "quantum computing" : 2, "cybersecurity" : 2,  "ai in finance" : 2, "plm" : 3, "erp" : 3, "crm" : 3, "supply chain management" : 1, "manufacturing execution systems" : 1, "mes" : 1, "digital twin" : 1, "industry 4.0" : 1, "smart factory" : 1, "iot in manufacturing" : 1, "predictive maintenance" : 1}
-
 
 def clean_text(text):
     """
@@ -44,10 +44,12 @@ def filter_news(data):
             if article["title"] == "" or article["description"] == "":
                 continue
             score = calculate_score(article)
-            if score > 1:  # Seuil de score pour inclure l'article dans les résultats filtrés
-                filtered_news.append(article)
-                print(article["title"])
-                print(score)
+            if score > 2: # Seuil de score pour inclure l'article dans les résultats filtrés
+                filtered_news.append([article["title"], article["description"], article["url"], score])
+                print("Title:", article["title"])
+                print("Description:", article["description"])
+                print("URL:", article["url"])
+                print("Score:", score)
                 print("----------------")   
     except KeyError:
         print("Error: Invalid data format")

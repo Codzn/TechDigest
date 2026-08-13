@@ -1,6 +1,5 @@
 from collectors.news_collector import get_news
 import re
-import json
 
 SI_KEYWORDS = {"artificial intelligence" : 2, "machine learning" : 2, "deep learning" : 2, "neural networks" : 2, "natural language processing" : 2, "computer vision" : 2, "robotics" : 1, "automation" : 2, "data science" : 2, "big data" : 2, "cloud computing" : 2, "edge computing" : 2, "quantum computing" : 2, "cybersecurity" : 2,  "ai in finance" : 2, "plm" : 3, "erp" : 3, "crm" : 3, "supply chain management" : 1, "manufacturing execution systems" : 1, "mes" : 1, "digital twin" : 1, "industry 4.0" : 1, "smart factory" : 1, "iot in manufacturing" : 1, "predictive maintenance" : 1}
 
@@ -16,10 +15,8 @@ def clean_text(text):
     cleaned_final = cleaned_text.lower().strip()
     return cleaned_final
 
-def calculate_score(article):
+def calculate_score(title, description):
     score = 0
-    title = article["title"]
-    description = article["description"]
     for keyword, points in SI_KEYWORDS.items():
         pattern = re.compile(r'\b' + re.escape(keyword) + r'\b', re.IGNORECASE)
         if re.search(pattern, title):
@@ -35,20 +32,25 @@ def filter_news(data):
 
     Retour : Les articles filtrés dans une liste en fonction des mots-clés définis dans SI_KEYWORDS.
     """
-    filtered_news = []
+    filtered_news = {}
     try:
         articles = data["articles"]
         for article in articles:
-            article["title"] = clean_text(article["title"])
-            article["description"] = clean_text(article["description"])
-            if article["title"] == "" or article["description"] == "":
+            title = clean_text(article["title"])
+            description = clean_text(article["description"])
+            if not title or not description:
                 continue
-            score = calculate_score(article)
-            if score > 2: # Seuil de score pour inclure l'article dans les résultats filtrés
-                filtered_news.append([article["title"], article["description"], article["url"], score])
-                print("Title:", article["title"])
-                print("Description:", article["description"])
-                print("URL:", article["url"])
+            score = calculate_score(title, description)
+            if score > 2:
+                 # Seuil de score pour inclure l'article dans les résultats filtrés
+                filtered_news[article["url"]] = {
+                    "title": title,
+                    "description": description,
+                    "score": score
+                }
+                print("Title:", title)
+                print("Description:", description)
+                print("URL:", article.get("url", "N/A"))
                 print("Score:", score)
                 print("----------------")   
     except KeyError:

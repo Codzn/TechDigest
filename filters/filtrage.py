@@ -38,7 +38,7 @@ def filter_news(data):
         for article in articles:
             title = clean_text(article["title"])
             description = clean_text(article["description"])
-            if not title or not description:
+            if not title or not description or not article.get("url"):
                 continue
             score = calculate_score(title, description)
             if score > 2:

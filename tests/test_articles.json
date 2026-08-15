@@ -1,0 +1,184 @@
+{
+  "articles": [
+    {
+      "title": "Microsoft expands artificial intelligence capabilities in enterprise cloud",
+      "description": "Microsoft announced new AI capabilities for enterprise customers using its cloud computing platform, with a focus on business applications and data services.",
+      "url": "https://example.com/article-01",
+      "expected_relevant": true
+    },
+    {
+      "title": "New AI photo editor arrives on smartphones",
+      "description": "A consumer application uses artificial intelligence to automatically enhance portraits and remove unwanted objects from photos.",
+      "url": "https://example.com/article-02",
+      "expected_relevant": false
+    },
+    {
+      "title": "Major ERP provider launches new enterprise resource planning platform",
+      "description": "The company unveiled a new ERP platform designed to integrate finance, operations and supply chain processes.",
+      "url": "https://example.com/article-03",
+      "expected_relevant": true
+    },
+    {
+      "title": "AI-powered ERP platform targets industrial companies",
+      "description": "The new enterprise platform combines artificial intelligence with ERP workflows to improve planning, forecasting and operational decision-making.",
+      "url": "https://example.com/article-04",
+      "expected_relevant": true
+    },
+    {
+      "title": "Gaming company unveils new graphics engine",
+      "description": "The engine improves rendering performance and visual effects for next-generation video games.",
+      "url": "https://example.com/article-05",
+      "expected_relevant": false
+    },
+    {
+      "title": "Manufacturing company deploys digital twin technology",
+      "description": "A manufacturer is using digital twins to simulate production lines and identify potential bottlenecks before modifying physical equipment.",
+      "url": "https://example.com/article-06",
+      "expected_relevant": true
+    },
+    {
+      "title": "Smart factory combines IoT and predictive maintenance",
+      "description": "Sensors connected through industrial IoT systems collect machine data to support predictive maintenance across a smart factory.",
+      "url": "https://example.com/article-07",
+      "expected_relevant": true
+    },
+    {
+      "title": "AI assistant helps users write birthday messages",
+      "description": "A new consumer chatbot uses artificial intelligence to generate personalized messages and social media captions.",
+      "url": "https://example.com/article-08",
+      "expected_relevant": false
+    },
+    {
+      "title": "PLM platform integrates engineering and manufacturing data",
+      "description": "The new product lifecycle management platform connects engineering teams with manufacturing processes and product information.",
+      "url": "https://example.com/article-09",
+      "expected_relevant": true
+    },
+    {
+      "title": "CRM vendor adds AI features to sales application",
+      "description": "The customer relationship management platform now uses artificial intelligence to summarize customer interactions and recommend follow-up actions.",
+      "url": "https://example.com/article-10",
+      "expected_relevant": true
+    },
+    {
+      "title": "Cloud computing market continues to grow",
+      "description": "Cloud computing providers reported continued growth in infrastructure and software services across several industries.",
+      "url": "https://example.com/article-11",
+      "expected_relevant": true
+    },
+    {
+      "title": "Cloud gaming service reduces latency for players",
+      "description": "A gaming company is investing in cloud infrastructure to stream games with lower latency to consumers.",
+      "url": "https://example.com/article-12",
+      "expected_relevant": false
+    },
+    {
+      "title": "Cybersecurity team discovers vulnerability in enterprise software",
+      "description": "Security researchers identified a vulnerability affecting an enterprise application and published mitigation recommendations.",
+      "url": "https://example.com/article-13",
+      "expected_relevant": true
+    },
+    {
+      "title": "Robot vacuum cleaner receives new automation features",
+      "description": "A household robot now automatically maps rooms and schedules cleaning tasks based on user preferences.",
+      "url": "https://example.com/article-14",
+      "expected_relevant": false
+    },
+    {
+      "title": "Robotics transforms warehouse operations",
+      "description": "A logistics company is deploying industrial robotics and automation to improve warehouse throughput and reduce repetitive manual tasks.",
+      "url": "https://example.com/article-15",
+      "expected_relevant": true
+    },
+    {
+      "title": "New machine learning model improves industrial quality control",
+      "description": "Manufacturers are using machine learning and computer vision to detect defects on production lines in real time.",
+      "url": "https://example.com/article-16",
+      "expected_relevant": true
+    },
+    {
+      "title": "Artificial intelligence predicts football match results",
+      "description": "A data science startup has developed a model that predicts sports results using historical match statistics.",
+      "url": "https://example.com/article-17",
+      "expected_relevant": false
+    },
+    {
+      "title": "AI and digital twins improve predictive maintenance",
+      "description": "Industrial companies are combining artificial intelligence, digital twins and predictive maintenance to anticipate equipment failures.",
+      "url": "https://example.com/article-18",
+      "expected_relevant": true
+    },
+    {
+      "title": "New supply chain management software improves logistics planning",
+      "description": "The software helps manufacturers optimize inventory, transportation and supply chain management decisions.",
+      "url": "https://example.com/article-19",
+      "expected_relevant": true
+    },
+    {
+      "title": "Social network introduces machine learning recommendation engine",
+      "description": "The platform uses machine learning to personalize content recommendations for its users.",
+      "url": "https://example.com/article-20",
+      "expected_relevant": false
+    },
+    {
+      "title": "Enterprise data platform combines big data and analytics",
+      "description": "A new data platform helps organizations process big data and build analytics pipelines for business intelligence.",
+      "url": "https://example.com/article-21",
+      "expected_relevant": true
+    },
+    {
+      "title": "AI-generated music tool becomes popular online",
+      "description": "A consumer application generates songs from short text prompts using artificial intelligence.",
+      "url": "https://example.com/article-22",
+      "expected_relevant": false
+    },
+    {
+      "title": "MES modernization connects factory operations with ERP",
+      "description": "A manufacturer is modernizing its manufacturing execution systems and integrating MES data with its ERP platform.",
+      "url": "https://example.com/article-23",
+      "expected_relevant": true
+    },
+    {
+      "title": "Quantum computing research reaches new milestone",
+      "description": "Researchers announced progress in quantum computing hardware and error correction techniques.",
+      "url": "https://example.com/article-24",
+      "expected_relevant": true
+    },
+    {
+      "title": "Popular smartphone gets faster processor",
+      "description": "The latest smartphone includes a faster processor, improved battery life and a redesigned camera system.",
+      "url": "https://example.com/article-25",
+      "expected_relevant": false
+    },
+    {
+      "title": "Predictive maintenance reduces downtime in automotive factory",
+      "description": "Machine data and predictive maintenance models help an automotive manufacturer identify equipment failures before production stops.",
+      "url": "https://example.com/article-26",
+      "expected_relevant": true
+    },
+    {
+      "title": "AI in finance helps banks detect suspicious transactions",
+      "description": "Financial institutions are deploying artificial intelligence and machine learning systems to improve fraud detection.",
+      "url": "https://example.com/article-27",
+      "expected_relevant": true
+    },
+    {
+      "title": "Retail company launches personalized shopping assistant",
+      "description": "The assistant uses natural language processing to answer customer questions and recommend products.",
+      "url": "https://example.com/article-28",
+      "expected_relevant": false
+    },
+    {
+      "title": "Industrial company adopts edge computing for factory analytics",
+      "description": "The company is deploying edge computing to process machine data closer to production equipment and reduce network latency.",
+      "url": "https://example.com/article-29",
+      "expected_relevant": true
+    },
+    {
+      "title": "Company announces business transformation program",
+      "description": "The organization plans to modernize its operations and improve efficiency, but provides few technical details about the program.",
+      "url": "https://example.com/article-30",
+      "expected_relevant": false
+    }
+  ]
+}

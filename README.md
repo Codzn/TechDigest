@@ -20,6 +20,8 @@ lancer le projet.
 
 ✔ Collecte NewsAPI
 
+Filtrages des articles
+
 Résumé IA
 
 Envoi automatique par mail

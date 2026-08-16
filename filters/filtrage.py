@@ -17,10 +17,15 @@ def clean_text(text):
 
 def calculate_score(title, description):
     score = 0
+    bonus_points = 3
+    occurence = 0
     for keyword, points in SI_KEYWORDS.items():
         pattern = re.compile(r'\b' + re.escape(keyword) + r'\b', re.IGNORECASE)
         if re.search(pattern, title):
-            score += points * 2  # Les mots-clés dans le titre ont un poids double
+            score += points * 2 # Les mots-clés dans le titre ont un poids double
+            occurence += 1
+            if occurence > 2:
+                score += bonus_points # Bonus si plus de 2 mots-clés sont trouvés dans le titre
         if re.search(pattern, description):
             score += points
 
@@ -41,8 +46,7 @@ def filter_news(data):
             if not title or not description or not article.get("url"):
                 continue
             score = calculate_score(title, description)
-            if score > 2:
-                 # Seuil de score pour inclure l'article dans les résultats filtrés
+            if score > 3:   # Seuil de score pour inclure l'article dans les résultats filtrés
                 filtered_news[article["url"]] = {
                     "title": title,
                     "description": description,

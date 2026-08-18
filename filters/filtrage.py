@@ -52,11 +52,13 @@ def filter_news(data):
                     "description": description,
                     "score": score
                 }
+                """
                 print("Title:", title)
                 print("Description:", description)
                 print("URL:", article.get("url", "N/A"))
                 print("Score:", score)
                 print("----------------")   
+                """
     except KeyError:
         print("Error: Invalid data format")
     return filtered_news
@@ -67,7 +69,8 @@ def articles_sorted_by_score(filtered_news):
     Récupère : Un dictionnaire d'articles filtrés.
     Retour : Une liste d'articles triés par score décroissant.
     """
-    return sorted(filtered_news.items(), key=lambda x: x[1]["score"], reverse=True)
+    return sorted(filtered_news.items(), key=lambda x: (x[1].get("score") or 0), reverse=True)
+
 
 
 """

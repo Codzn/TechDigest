@@ -1,21 +1,19 @@
+from .filtrage import clean_text
+
 import re
 
 def normalize_title(title):
     """
     Normalize the title by converting it to lowercase and stripping whitespace.
     """
+    cleaned_title = clean_text(title)
+    return cleaned_title
+
 
 def get_words(title):
     """
     Split the title into words and return a set of unique words.
     """
-    return {
-        "microsoft",
-        "launches",
-        "new",
-        "ai",
-        "platform"
-    }
 
 def jaccard_similarity(title1, title2):
     """

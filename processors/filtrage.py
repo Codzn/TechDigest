@@ -40,7 +40,7 @@ def filter_news(data):
 
     Retour : Les articles filtrés dans une liste en fonction des mots-clés définis dans SI_KEYWORDS.
     """
-    filtered_news = {}
+    filtered_news = []
     try:
         articles = data["articles"]
         for article in articles:
@@ -50,11 +50,12 @@ def filter_news(data):
                 continue
             score = calculate_score(title, description)
             if score > 5:   # Seuil de score pour inclure l'article dans les résultats filtrés
-                filtered_news[article["url"]] = {
+                filtered_news.append({
                     "title": title,
                     "description": description,
-                    "score": score
-                }
+                    "score": score,
+                    "url": article["url"]
+                })
     except KeyError:
         print("Error: Invalid data format")
     return filtered_news

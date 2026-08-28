@@ -34,16 +34,13 @@ def remove_duplicates(filtered_news):
     """
     unique_articles = []
     for article1 in filtered_news:
-        is_duplicate = False
-        for article2 in unique_articles: # Compare each article with the articles already in unique_articles
+        matching_indx = None
+        for indx, article2 in enumerate(unique_articles): # Compare each article with the articles already in unique_articles
             if jaccard_similarity(article1['title'], article2['title']) > 0.8:  # Adjust threshold as needed
-                is_duplicate = True
-                score1 = article1['score']
-                score2 = article2['score']
-                if score1 > score2:
-                    unique_articles.append(article1)
-                    unique_articles.remove(article2)  # Remove the lower scored article
-                break  # No need to check further if a duplicate is found
-        if not is_duplicate:
+                matching_indx = indx
+        if matching_indx is None:
             unique_articles.append(article1)
+        else:
+            if article1['score'] > unique_articles[matching_indx]['score']:
+                unique_articles[matching_indx] = article1  # Replace with the article with the higher score
     return unique_articles

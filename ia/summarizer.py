@@ -1,7 +1,6 @@
-import google.genai as genai
+from google import genai
 import os
 from dotenv import load_dotenv
-
 from collectors.news_collector import get_news
 
 """
@@ -14,10 +13,19 @@ Elle enverra ensuite un email contenant le résumé généré à l'adresse e-mai
 
 load_dotenv()
 
+
 CLE_GEMINI = os.getenv("CLE_GEMINI")
 genai.configure(api_key=CLE_GEMINI)
 
-generator = genai.GenerativeModel("gemini-1.5-flash")
+
+client = genai.Client()
+
+response = client.models.generate_content(
+    model="gemini-1.5-flash",
+    contents=""
+)
+
+print(response.text)
 
 def summarize_article(unique_articles):
     """

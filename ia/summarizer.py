@@ -21,17 +21,22 @@ def summarize_article(unique_articles):
     Récupère : Les articles filtrés dans une liste en fonction des mots-clés définis dans SI_KEYWORDS.
     Retour : Un résumé des articles sous forme de texte. 
     """
+    summaries = []
     config = types.GenerateContentConfig(
-        system_instructions="You are an expert in Information Systems. Please summarize the following article about Information Technology to keep the essential data in French."
-    )
+        system_instruction="""You are an expert in Information Systems. Summarise the article in French in 1 paragraph of 4 to 6 sentences.
+        Keep the important information, the context and the main consequences.
+        The summary must be detailed enough for a person to understand the interest of the article without reading the original article.
+    """)
 
     for article in unique_articles:
         #On crée une nouvelle session de chat vide pour chaque article.
-        chat = client.chat.create(model="gemini-3.6-flash", config=config)
+        chat = client.chats.create(model="gemini-3.6-flash", config=config)
 
-        prompt = f"Title: {article['title']}\nDescription: {article['description']}"
+        prompt = f"Title: {article['title']}\nDescription: {article['description']}\nURL: {article['url']}"
         response = chat.send_message(prompt)
 
         print(f"Résumé de l'article '{article['title']}':\n{response.text}\n")
+
+        summaries.append({ "title": article['title'], "summary": response.text, "url": article['url'] })
     
-    
+    return summaries

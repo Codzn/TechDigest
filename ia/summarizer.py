@@ -3,6 +3,7 @@ from google.genai import types
 import os
 from dotenv import load_dotenv
 from collectors.news_collector import get_news
+from model.Article import Article
 
 """
 Ma fonction reçoit un ensemble d'articles filtrés et renvoie un résumé de ces articles sous forme de texte.
@@ -32,11 +33,11 @@ def summarize_article(unique_articles):
         #On crée une nouvelle session de chat vide pour chaque article.
         chat = client.chats.create(model="gemini-3.6-flash", config=config)
 
-        prompt = f"Title: {article['title']}\nDescription: {article['description']}\nURL: {article['url']}"
+        prompt = f"Title: {article.title}\nDescription: {article.description}\nURL: {article.url}"
         response = chat.send_message(prompt)
 
-        print(f"Résumé de l'article '{article['title']}':\n{response.text}\n")
+        print(f"Résumé de l'article '{article.title}':\n{response.text}\n")
 
-        summaries.append({ "title": article['title'], "summary": response.text, "url": article['url'] })
-    
-    return summaries
+        article.summary = response.text
+
+    return unique_articles

@@ -4,6 +4,7 @@ import os
 from dotenv import load_dotenv
 from collectors.news_collector import get_news
 from model.Article import Article
+from ia.ArticleIaGuide import ArticleIaGuide
 
 """
 Ma fonction reçoit un ensemble d'articles filtrés et renvoie un résumé de ces articles sous forme de texte.
@@ -32,12 +33,26 @@ def summarize_article(unique_articles):
         response = client.models.generate_content(
             model="gemini-3.6-flash",
             contents=f"Title: {article.title}\nDescription: {article.description}\nURL: {article.url}",
-            config=config
-            response_format={
-                summary =
-
-            }
+            config=types.GenerateContentConfig(
+                response_mime_type="application/json",
+                response_schema=ArticleIaGuide,
+            ),
         )
-        print(f"Résumé de l'article '{article.title}':\n{response.text}\n")
-        article.summary = response.text
+
+        json_brut = response.text
+
+        if json_brut:
+            # On force Pydantic à valider le JSON brut en utilisant le modèle ArticleIaGuide
+            donnes_ia = ArticleIaGuide.model_validate_json(json_brut)
+
+            #On range les données de l'article à partir de la réponse du modèle.
+            article.summary = donnes_ia.summary
+            article.category = donnes_ia.category
+            article.importance = donnes_ia.importance
+
+            print(f"Résumé de l'article '{article.title}':\n{article.summary}\n")
+        else:
+            print(f"Erreur : L'IA a renvoyé une réponse vide pour l'article '{article.title}'.")
+
+            
     return unique_articles

@@ -22,18 +22,17 @@ def summarize_article(unique_articles):
     Récupère : Les articles filtrés dans une liste en fonction des mots-clés définis dans SI_KEYWORDS.
     Retour : Un résumé des articles sous forme de texte. 
     """
-    config = types.GenerateContentConfig(
-        system_instruction="""You are an expert in Information Systems. Summarise the article in French in 1 paragraph of 4 to 6 sentences.
-        Keep the important information, the context and the main consequences.
-        The summary must be detailed enough for a person to understand the interest of the article without reading the original article.
-    """)
-
+    
     for article in unique_articles:
         #On crée une nouvelle session de chat vide pour chaque article.
         response = client.models.generate_content(
             model="gemini-3.6-flash",
             contents=f"Title: {article.title}\nDescription: {article.description}\nURL: {article.url}",
             config=types.GenerateContentConfig(
+                system_instruction="""You are an expert in Information Systems. Summarise the article in French in 1 paragraph of 4 to 6 sentences.
+                        Keep the important information, the context and the main consequences.
+                        The summary must be detailed enough for a person to understand the interest of the article without reading the original article.
+                    """,
                 response_mime_type="application/json",
                 response_schema=ArticleIaGuide,
             ),

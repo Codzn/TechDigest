@@ -7,7 +7,7 @@ import dotenv
 
 dotenv.load_dotenv()
 
-def envoyer_veille_technologique(contenu_texte: str):
+def envoyer_veille_technologique(contenu_html: str):
     """
     Prend le texte généré par l'IA et l'envoie par e-mail à l'adresse spécifiée dans la variable d'environnement EMAIL_DESTINATAIRE.
     """
@@ -22,7 +22,7 @@ def envoyer_veille_technologique(contenu_texte: str):
     msg['To'] = email_to
     msg['Subject'] = "Actualité TechDigest de la veille"
 
-    msg.attach(MIMEText(contenu_texte, 'plain', 'utf-8'))
+    msg.attach(MIMEText(contenu_html, 'html', 'utf-8'))
 
     try:
         # 3. Connexion au serveur SMTP et envoi de l'e-mail

@@ -14,15 +14,24 @@ def get_news():
         dict : Un dictionnaire contenant les articles d'actualités.
     """
     try:
-        date_hier = (datetime.date.today() - datetime.timedelta(days=1)).isoformat()
+        last_week = (datetime.date.today() - datetime.timedelta(days=7)).isoformat()
         keywords = (
             '"système d\'information" OR "systèmes d\'information" OR ERP OR SAP OR CRM OR PLM OR '
             '"transformation numérique" OR "transformation digitale" OR "industrie 4.0" OR "jumeau numérique" OR '
             '"cybersécurité" OR "intelligence artificielle" OR "cloud" OR "data analytics" OR "supply chain" OR '
             'MES OR "digital twin"'
         )
-        url = f"https://newsapi.org/v2/everything?q={keywords}&language=fr&sortBy=publishedAt&from={date_hier}&pageSize=100&apiKey={NEWS_API_KEY}"
-        response = requests.get(url)
+
+        params = {
+            "q": keywords,
+            "language": "fr",
+            "sortBy": "publishedAt",
+            "from": last_week,
+            "to": datetime.date.today().isoformat(),
+            "pageSize": 100,
+            "apiKey": NEWS_API_KEY
+        }
+        response = requests.get("https://newsapi.org/v2/everything", params=params)
         data = response.json()
         return data
     except Exception as e:

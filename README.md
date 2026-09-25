@@ -105,7 +105,7 @@ python main.py
 
 The script retrieves articles, runs the pipeline, generates HTML, and sends the email. Since SMTP sending has already been validated, it is recommended to send test digests to your own address first.
 
-### Test the email without SMTP
+Test the email without SMTP
 
 The HTML generator can be tested separately with sample `Article` objects:
 

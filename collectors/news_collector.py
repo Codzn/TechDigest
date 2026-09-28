@@ -32,9 +32,11 @@ def get_news():
             "apiKey": NEWS_API_KEY
         }
         response = requests.get("https://newsapi.org/v2/everything", params=params)
+        response.raise_for_status()  # Raise an error for bad responses
+        
         data = response.json()
         return data
-    except Exception as e:
+    except requests.exceptions.RequestException as e:
         print(f"Error fetching news: {e}")
         return {"articles": []}
 

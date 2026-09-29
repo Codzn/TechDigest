@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from collectors.news_collector import get_news
 from model.Article import Article
 from ia.ArticleIaGuide import ArticleIaGuide
+import time 
 
 """
 Ma fonction reçoit un ensemble d'articles filtrés et renvoie un résumé de ces articles sous forme de texte.
@@ -22,36 +23,46 @@ def summarize_article(unique_articles):
     Récupère : Les articles filtrés dans une liste en fonction des mots-clés définis dans SI_KEYWORDS.
     Retour : Un résumé des articles sous forme de texte. 
     """
-    
+    tentative = 5  # Temps d'attente en secondes entre les tentatives en cas d'erreur
+
     for article in unique_articles:
         #On crée une nouvelle session de chat vide pour chaque article.
-        response = client.models.generate_content(
-            model="gemini-3.6-flash",
-            contents=f"Title: {article.title}\nDescription: {article.description}\nURL: {article.url}",
-            config=types.GenerateContentConfig(
-                system_instruction="""You are an expert in Information Systems. Summarise the article in French in 1 paragraph of 4 to 6 sentences.
-                        Keep the important information, the context and the main consequences.
-                        The summary must be detailed enough for a person to understand the interest of the article without reading the original article.
-                    """,
-                response_mime_type="application/json",
-                response_schema=ArticleIaGuide,
-            ),
-        )
+        for i in range(3):  # Essayer jusqu'à 3 fois en cas d'erreur
 
-        json_brut = response.text
+            try:
+                response = client.models.generate_content(
+                    model="gemini-3.6-flash",
+                    contents=f"Title: {article.title}\nDescription: {article.description}\nURL: {article.url}",
+                    config=types.GenerateContentConfig(
+                        system_instruction="""You are an expert in Information Systems. Summarise the article in French in 1 paragraph of 4 to 6 sentences.
+                                Keep the important information, the context and the main consequences.
+                                The summary must be detailed enough for a person to understand the interest of the article without reading the original article.
+                            """,
+                        response_mime_type="application/json",
+                        response_schema=ArticleIaGuide,
+                    ),
+                )
 
-        if json_brut:
-            # On force Pydantic à valider le JSON brut en utilisant le modèle ArticleIaGuide
-            donnes_ia = ArticleIaGuide.model_validate_json(json_brut)
+            except Exception as e:
+                time.sleep(tentative)  # Attendre 5 secondes avant de réessayer
+                tentative = 2 ** tentative  # Double le temps d'attente pour la prochaine tentative
+                print(f"Erreur lors de la génération du résumé pour l'article '{article.title}': {e}")
 
-            #On range les données de l'article à partir de la réponse du modèle.
-            article.summary = donnes_ia.summary
-            article.category = donnes_ia.category
-            article.importance = donnes_ia.importance
+            json_brut = response.text
+                
+            if json_brut:
+                # On force Pydantic à valider le JSON brut en utilisant le modèle ArticleIaGuide
+                donnes_ia = ArticleIaGuide.model_validate_json(json_brut)
+                #On range les données de l'article à partir de la réponse du modèle.
+                article.summary = donnes_ia.summary
+                article.category = donnes_ia.category
+                article.importance = donnes_ia.importance
 
-            print(f"Résumé de l'article '{article.title}':\n{article.summary}\n")
-        else:
-            print(f"Erreur : L'IA a renvoyé une réponse vide pour l'article '{article.title}'.")
+                print(f"Résumé de l'article '{article.title}':\n{article.summary}\n")
+            else:
+                print(f"Erreur : L'IA a renvoyé une réponse vide pour l'article '{article.title}'.")
+
+            break  # Sortir de la boucle si la génération est réussie
 
             
     return unique_articles

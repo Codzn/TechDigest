@@ -31,7 +31,7 @@ def get_news():
             "pageSize": 100,
             "apiKey": NEWS_API_KEY
         }
-        response = requests.get("https://newsapi.org/v2/everything", params=params)
+        response = requests.get("https://newsapi.org/v2/everything", params=params, timeout=10)
         response.raise_for_status()  # Raise an error for bad responses
         
         data = response.json()
@@ -39,6 +39,10 @@ def get_news():
     except requests.exceptions.RequestException as e:
         print(f"Error fetching news: {e}")
         return {"articles": []}
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        return {"articles": []}
+
 
 def print_news(data):
     try:

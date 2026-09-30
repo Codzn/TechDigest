@@ -23,9 +23,10 @@ def summarize_article(unique_articles):
     Récupère : Les articles filtrés dans une liste en fonction des mots-clés définis dans SI_KEYWORDS.
     Retour : Un résumé des articles sous forme de texte. 
     """
-    tentative = 5  # Temps d'attente en secondes entre les tentatives en cas d'erreur
 
     for article in unique_articles:
+        sucess = False  # Variable pour suivre si la génération a réussi
+        
         #On crée une nouvelle session de chat vide pour chaque article.
         for i in range(3):  # Essayer jusqu'à 3 fois en cas d'erreur
 
@@ -43,10 +44,17 @@ def summarize_article(unique_articles):
                     ),
                 )
 
+                success = True
+                break  # Sortir de la boucle si la génération est réussie
+
             except Exception as e:
-                time.sleep(tentative)  # Attendre 5 secondes avant de réessayer
-                tentative = 2 ** tentative  # Double le temps d'attente pour la prochaine tentative
-                print(f"Erreur lors de la génération du résumé pour l'article '{article.title}': {e}")
+                if i < 2:  # Si ce n'est pas la dernière tentative
+                    time.sleep(2 ** i)  # Attendre exponentiellement plus longtemps après chaque échec
+                    print(f"Erreur lors de la génération du résumé pour l'article '{article.title}': {e}")
+
+            if not success:
+                print(f"Erreur : L'IA n'a pas pu générer de résumé pour l'article '{article.title}' après plusieurs tentatives.")
+                continue  # Passer à l'article suivant
 
             json_brut = response.text
                 
@@ -61,8 +69,6 @@ def summarize_article(unique_articles):
                 print(f"Résumé de l'article '{article.title}':\n{article.summary}\n")
             else:
                 print(f"Erreur : L'IA a renvoyé une réponse vide pour l'article '{article.title}'.")
-
-            break  # Sortir de la boucle si la génération est réussie
 
             
     return unique_articles

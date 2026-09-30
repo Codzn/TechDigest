@@ -4,6 +4,7 @@ from email.header import Header
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import dotenv
+import logging
 
 dotenv.load_dotenv()
 
@@ -29,6 +30,6 @@ def envoyer_veille_technologique(contenu_html: str):
         with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
             server.login(email_user, mdp_email)
             server.sendmail(email_user, email_to, msg.as_string())
-        print(f"E-mail envoyé avec succès à {email_to}.")
+        logging.info(f"E-mail envoyé avec succès à {email_to}.")
     except Exception as e:
-        print(f"Erreur lors de l'envoi de l'e-mail : {e}")
+        logging.error(f"Erreur lors de l'envoi de l'e-mail : {e}")

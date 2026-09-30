@@ -4,7 +4,13 @@ from mail.email_sender import envoyer_veille_technologique
 from processors.deduplicate import remove_duplicates
 from processors.filtrage import filter_news, articles_sorted_by_score
 from ia.summarizer import summarize_article
+import logging
 
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s',
+                    handlers=[logging.FileHandler("techdigest.log"), 
+                              logging.StreamHandler()]
+                    )
 def main():
     """
     Fonction principale qui orchestre le processus de collecte, filtrage, déduplication, résumé et envoi d'articles.

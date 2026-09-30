@@ -25,7 +25,7 @@ def summarize_article(unique_articles):
     """
 
     for article in unique_articles:
-        sucess = False  # Variable pour suivre si la génération a réussi
+        success = False  # Variable pour suivre si la génération a réussi
         
         #On crée une nouvelle session de chat vide pour chaque article.
         for i in range(3):  # Essayer jusqu'à 3 fois en cas d'erreur
@@ -52,23 +52,23 @@ def summarize_article(unique_articles):
                     time.sleep(2 ** i)  # Attendre exponentiellement plus longtemps après chaque échec
                     print(f"Erreur lors de la génération du résumé pour l'article '{article.title}': {e}")
 
-            if not success:
-                print(f"Erreur : L'IA n'a pas pu générer de résumé pour l'article '{article.title}' après plusieurs tentatives.")
-                continue  # Passer à l'article suivant
+        if not success:
+            print(f"Erreur : L'IA n'a pas pu générer de résumé pour l'article '{article.title}' après plusieurs tentatives.")
+            continue  # Passer à l'article suivant
 
-            json_brut = response.text
+        json_brut = response.text
                 
-            if json_brut:
-                # On force Pydantic à valider le JSON brut en utilisant le modèle ArticleIaGuide
-                donnes_ia = ArticleIaGuide.model_validate_json(json_brut)
-                #On range les données de l'article à partir de la réponse du modèle.
-                article.summary = donnes_ia.summary
-                article.category = donnes_ia.category
-                article.importance = donnes_ia.importance
+        if json_brut:
+            # On force Pydantic à valider le JSON brut en utilisant le modèle ArticleIaGuide
+            donnes_ia = ArticleIaGuide.model_validate_json(json_brut)
+            #On range les données de l'article à partir de la réponse du modèle.
+            article.summary = donnes_ia.summary
+            article.category = donnes_ia.category
+            article.importance = donnes_ia.importance
 
-                print(f"Résumé de l'article '{article.title}':\n{article.summary}\n")
-            else:
-                print(f"Erreur : L'IA a renvoyé une réponse vide pour l'article '{article.title}'.")
+            print(f"Résumé de l'article '{article.title}':\n{article.summary}\n")
+        else:
+            print(f"Erreur : L'IA a renvoyé une réponse vide pour l'article '{article.title}'.")
 
             
     return unique_articles

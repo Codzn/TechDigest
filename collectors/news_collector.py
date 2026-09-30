@@ -2,6 +2,8 @@ from dotenv import load_dotenv
 import os
 import requests
 import datetime
+import logging
+
 
 load_dotenv()
 NEWS_API_KEY = os.getenv("NEWS_API")
@@ -37,10 +39,10 @@ def get_news():
         data = response.json()
         return data
     except requests.exceptions.RequestException as e:
-        print(f"Error fetching news: {e}")
+        logging.error(f"Error fetching news: {e}")
         return {"articles": []}
     except Exception as e:
-        print(f"Unexpected error: {e}")
+        logging.error(f"Unexpected error: {e}")
         return {"articles": []}
 
 
@@ -53,7 +55,7 @@ def print_news(data):
                 print(f"URL: {article['url']}")
                 print("-" * 80)
     except Exception as e:
-        print(f"Error printing news: {e}")
+        logging.error(f"Error printing news: {e}")
 
 """
 Retourne bien le titre et la description de chaque article, ainsi que l'URL de l'article.

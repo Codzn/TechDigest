@@ -21,7 +21,10 @@ def get_news():
             '"système d\'information" OR "systèmes d\'information" OR ERP OR SAP OR CRM OR PLM OR '
             '"transformation numérique" OR "transformation digitale" OR "industrie 4.0" OR "jumeau numérique" OR '
             '"cybersécurité" OR "intelligence artificielle" OR "cloud" OR "data analytics" OR "supply chain" OR '
-            'MES OR "digital twin"'
+            'MES OR "digital twin" OR "OpenAI" OR "ChatGPT" OR "IA" OR "machine learning" OR "deep learning" OR '
+            '"neural networks" OR "natural language processing" OR "computer vision" OR "robotics" OR "automation" OR '
+            '"data science" OR "big data" OR "cloud computing" OR "edge computing" OR "quantum computing" OR '
+            '"cybersecurity" OR "system"'
         )
 
         params = {

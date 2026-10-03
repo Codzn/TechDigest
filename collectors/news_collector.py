@@ -10,10 +10,10 @@ NEWS_API_KEY = os.getenv("NEWS_API")
 
 def get_news():
     """
-    Récupère les acutalités depuis NewsApi.
+    Retrieves news from NewsAPI.
 
-    Retour : 
-        dict : Un dictionnaire contenant les articles d'actualités.
+    Returns:
+        dict: A dictionary containing the news articles.
     """
     try:
         last_week = (datetime.date.today() - datetime.timedelta(days=7)).isoformat()
@@ -59,14 +59,4 @@ def print_news(data):
                 print("-" * 80)
     except Exception as e:
         logging.error(f"Error printing news: {e}")
-
-"""
-Retourne bien le titre et la description de chaque article, ainsi que l'URL de l'article.
-"""
-
-"""
-print("Récupération des actualités en cours...")
-news_data = get_news()
-print_news(news_data)
-"""
 

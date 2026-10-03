@@ -17,7 +17,7 @@ def envoyer_veille_technologique(contenu_html: str):
     mdp_email = os.getenv("PASS_EMAIL", "")
     email_to = os.getenv("RECIPIENT_EMAIL", email_user)  # If RECIPIENT_EMAIL is not defined, the email is sent to the sender's address.
 
-    # 2. Création du message e-mail
+    # 2. Creating the email message
     msg = MIMEMultipart()
     msg['From'] = email_user
     msg['To'] = email_to

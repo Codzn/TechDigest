@@ -1,10 +1,10 @@
 def generate_email(articles):
     """
-    Génère le contenu de l'e-mail à partir des articles résumés.
+    Generates the email content from the summarized articles.
     """
     contenu_html = """
-    <p>Bonjour,</p>
-    <p>Voici les résumés des articles de la veille technologique :</p>
+    <p>Hello,</p>
+    <p>Here are the summaries of the latest technology articles:</p>
     """
     
     for article in articles:
@@ -14,6 +14,6 @@ def generate_email(articles):
         contenu_html += f"<p><strong>Importance:</strong> {article.importance}</p>"
         contenu_html += f"<p><strong>URL:</strong> <a href='{article.url}'>{article.url}</a></p>"
     
-    contenu_html += "<p>Cordialement,<br/>L'équipe TechDigest</p>"
+    contenu_html += "<p>Sincerely,<br/>The Team TechDigest</p>"
     
     return contenu_html

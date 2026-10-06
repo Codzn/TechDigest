@@ -29,8 +29,8 @@ def test_filterage():
 
     filtered_articles = filter_news(test_data)
     assert len(filtered_articles) == 2
-    assert filtered_articles[0].title == "IA and Machine Learning: The Future of Data Science"
-    assert filtered_articles[1].title == "Why did an OpenAI system hack Australia's SI system?"
+    assert filtered_articles[0].title == "ia and machine learning: the future of data science"
+    assert filtered_articles[1].title == "why did an openai system hack australia's si system?"
 
     filtered_articles_sorted = articles_sorted_by_score(filtered_articles)
     assert filtered_articles_sorted[0].score >= filtered_articles_sorted[1].score

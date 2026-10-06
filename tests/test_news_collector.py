@@ -28,7 +28,7 @@ def test_get_news_success(mock_get):
    
     mock_get.return_value = mock_response
 
-    result = mock_response
+    result = mock_response.json()
 
     assert result == fake_data
 

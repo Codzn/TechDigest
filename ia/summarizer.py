@@ -16,13 +16,13 @@ Elle enverra ensuite un email contenant le résumé généré à l'adresse e-mai
 """
 
 load_dotenv()
-client = genai.Client(api_key=os.getenv("CLE_GEMINI"))
 
 def summarize_article(unique_articles):
     """
     Récupère : Les articles filtrés dans une liste en fonction des mots-clés définis dans SI_KEYWORDS.
     Retour : Un résumé des articles sous forme de texte. 
     """
+    client = genai.Client(api_key=os.getenv("CLE_GEMINI"))
 
     for article in unique_articles:
         success = False  # Variable pour suivre si la génération a réussi

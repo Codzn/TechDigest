@@ -16,6 +16,11 @@ def main():
     Fonction principale qui orchestre le processus de collecte, filtrage, déduplication, résumé et envoi d'articles.
     """
     news = get_news()
+    if not news["articles"]:
+        logging.error("No news articles found.")
+        return
+    
+    logging.info(f"Fetched {len(news['articles'])} articles.")
     cleaned_news = filter_news(news)
     sorted_news = articles_sorted_by_score(cleaned_news)
     # Supprimer les doublons

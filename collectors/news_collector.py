@@ -30,7 +30,6 @@ def get_news():
                     '"data science" OR '
                     '"cloud computing"'
 )
-
         params = {
             "q": keywords,
             "language": "fr",
@@ -63,4 +62,5 @@ def print_news(data):
                 print("-" * 80)
     except Exception as e:
         logging.error(f"Error printing news: {e}")
+
 

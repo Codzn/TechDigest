@@ -17,15 +17,19 @@ def get_news():
     """
     try:
         last_week = (datetime.date.today() - datetime.timedelta(days=7)).isoformat()
-        keywords = (
-            '"système d\'information" OR "systèmes d\'information" OR ERP OR SAP OR CRM OR PLM OR '
-            '"transformation numérique" OR "transformation digitale" OR "industrie 4.0" OR "jumeau numérique" OR '
-            '"cybersécurité" OR "intelligence artificielle" OR "cloud" OR "data analytics" OR "supply chain" OR '
-            'MES OR "digital twin" OR "OpenAI" OR "ChatGPT" OR "IA" OR "machine learning" OR "deep learning" OR '
-            '"neural networks" OR "natural language processing" OR "computer vision" OR "robotics" OR "automation" OR '
-            '"data science" OR "big data" OR "cloud computing" OR "edge computing" OR "quantum computing" OR '
-            '"cybersecurity" OR "system"'
-        )
+        keywords = ('"système d\'information" OR '
+                    'ERP OR SAP OR CRM OR PLM OR '
+                    '"transformation numérique" OR '
+                    '"transformation digitale" OR '
+                    '"industrie 4.0" OR '
+                    '"jumeau numérique" OR '
+                    'cybersécurité OR '
+                    '"intelligence artificielle" OR '
+                    'OpenAI OR ChatGPT OR '
+                    '"machine learning" OR '
+                    '"data science" OR '
+                    '"cloud computing"'
+)
 
         params = {
             "q": keywords,
@@ -39,13 +43,13 @@ def get_news():
         response = requests.get("https://newsapi.org/v2/everything", params=params, timeout=10)
         response.raise_for_status()  # Raise an error for bad responses
         
-        data = response.json()
+        data = response.json() # means that the response is expected to be in JSON format and it will be converted into a Python dictionary.
         return data
     except requests.exceptions.RequestException as e:
-        logging.error(f"Error fetching news: {e}")
+        logging.error(f"Error fetching news: HTTP request failed")
         return {"articles": []}
     except Exception as e:
-        logging.error(f"Unexpected error: {e}")
+        logging.error(f"Unexpected error")
         return {"articles": []}
 
 

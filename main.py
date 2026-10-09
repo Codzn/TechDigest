@@ -25,7 +25,9 @@ def main():
     sorted_news = articles_sorted_by_score(cleaned_news)
     # Supprimer les doublons
     unique_articles = remove_duplicates(sorted_news)
-    summarized_articles = summarize_article(unique_articles)
+    MAX_ARTICLES = 10
+    top_articles = unique_articles[:MAX_ARTICLES]
+    summarized_articles = summarize_article(top_articles)
     html_content = generate_email(summarized_articles)
     envoyer_veille_technologique(html_content)
 

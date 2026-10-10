@@ -25,8 +25,13 @@ def summarize_article(unique_articles):
     """
     client = genai.Client(api_key=os.getenv("CLE_GEMINI"))
 
+    quota_exceeded = False  # Variable pour suivre si le quota est dépassé
+    
     for article in unique_articles:
         success = False  # Variable pour suivre si la génération a réussi
+     
+        if quota_exceeded:
+            break  # Sortir de la boucle si le quota est dépassé
         
         #On crée une nouvelle session de chat vide pour chaque article.
         for i in range(3):  # Essayer jusqu'à 3 fois en cas d'erreur
@@ -50,15 +55,19 @@ def summarize_article(unique_articles):
 
             except Exception as e:
                 if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e): # Vérifier si l'erreur est un dépassement de quota
-                    logging.error(f"Quota exceeded or rate limit reached: {e}. Retrying in 60 seconds...")
+                    logging.error(f"Quota exceeded or rate limit reached: {e}. Retrying ...")
+                    quota_exceeded = True
                     break  # Sortir de la boucle si le quota est dépassé
                 if i < 2:  # Si ce n'est pas la dernière tentative
                     time.sleep(2 ** i)  # Attendre exponentiellement plus longtemps après chaque échec
                     print(f"Erreur lors de la génération du résumé pour l'article '{article.title}': {e}")
 
         if not success:
-            print(f"Erreur : L'IA n'a pas pu générer de résumé pour l'article '{article.title}' après plusieurs tentatives.")
-            continue  # Passer à l'article suivant
+            if quota_exceeded:
+                logging.error(f"Quota exceeded. Stopping further processing.")
+                break  # Sortir de la boucle si le quota est dépassé
+            logging.error(f"Failed to generate summary for article '{article.title}' after 3 attempts.")
+            continue  # Passer à l'article suivant si la génération a échoué après 3 tentatives
 
         json_brut = response.text
                 

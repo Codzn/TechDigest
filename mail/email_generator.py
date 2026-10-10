@@ -1,3 +1,5 @@
+from html import escape
+
 def generate_email(articles):
     """Generates a responsive and modern HTML email content from summarized articles."""
     
@@ -44,7 +46,12 @@ def generate_email(articles):
         importance_color = "#4a5568"
         if str(article.importance).lower() in ["high", "haute", "3"]:
             importance_bg = "#feebc8"
-            importance_color = "#c05621"
+            importance_color = "#c08021"
+
+        summary= article.summary if article.summary else "No summary available."
+        category = article.category if article.category else "General"
+        importance = article.importance if article.importance else "0"
+        title = escape(article.title) if article.title else "No title available."
 
         contenu_html += f"""
                             <!-- Article Card -->
@@ -56,10 +63,10 @@ def generate_email(articles):
                                             <tr>
                                                 <td>
                                                     <span style="display: inline-block; background-color: #ebf8ff; color: #2b6cb0; font-size: 11px; font-weight: 600; text-transform: uppercase; padding: 4px 8px; border-radius: 4px; letter-spacing: 0.5px;">
-                                                        {article.category}
+                                                        {category}
                                                     </span>
                                                     <span style="display: inline-block; background-color: {importance_bg}; color: {importance_color}; font-size: 11px; font-weight: 600; text-transform: uppercase; padding: 4px 8px; border-radius: 4px; letter-spacing: 0.5px; margin-left: 6px;">
-                                                        Importance: {article.importance}
+                                                        Importance: {importance}
                                                     </span>
                                                 </td>
                                             </tr>
@@ -67,12 +74,12 @@ def generate_email(articles):
 
                                         <!-- Title -->
                                         <h2 style="margin: 0 0 10px 0; font-size: 18px; color: #1a202c; font-weight: 600; line-height: 1.3;">
-                                            {article.title}
+                                            {title}
                                         </h2>
 
                                         <!-- Summary -->
                                         <p style="margin: 0 0 16px 0; font-size: 14px; color: #4a5568; line-height: 1.6;">
-                                            {article.summary}
+                                            {summary}
                                         </p>
 
                                         <!-- Call to Action Button -->

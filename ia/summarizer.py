@@ -6,6 +6,7 @@ from collectors.news_collector import get_news
 from model.Article import Article
 from ia.ArticleIaGuide import ArticleIaGuide
 import time 
+import logging
 
 """
 Ma fonction reçoit un ensemble d'articles filtrés et renvoie un résumé de ces articles sous forme de texte.
@@ -48,6 +49,9 @@ def summarize_article(unique_articles):
                 break  # Sortir de la boucle si la génération est réussie
 
             except Exception as e:
+                if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e): # Vérifier si l'erreur est un dépassement de quota
+                    logging.error(f"Quota exceeded or rate limit reached: {e}. Retrying in 60 seconds...")
+                    break  # Sortir de la boucle si le quota est dépassé
                 if i < 2:  # Si ce n'est pas la dernière tentative
                     time.sleep(2 ** i)  # Attendre exponentiellement plus longtemps après chaque échec
                     print(f"Erreur lors de la génération du résumé pour l'article '{article.title}': {e}")

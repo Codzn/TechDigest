@@ -25,7 +25,15 @@ article3 = Article(
     url="https://example.com/third-test-article"
 )
 
-articles = [article1, article2, article3]
+article4 = Article(
+    title="Fourth & Test Article",
+    summary="None",
+    category="None",
+    importance="None",
+    url="https://example.com/fourth-test-article"
+)
+
+articles = [article1, article2, article3, article4]
 
 contenu_html = generate_email(articles)
 

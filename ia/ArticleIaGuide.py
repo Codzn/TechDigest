@@ -6,4 +6,4 @@ class ArticleIaGuide(BaseModel):
 
     category: str = Field(description="The category of the article.")
 
-    importance: int = Field(description="The importance of the article.")
+    importance: str = Field(description="The importance of the article.")

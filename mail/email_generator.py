@@ -1,7 +1,13 @@
 from html import escape
+from urllib.parse import urlparse
 
 def generate_email(articles):
+
     """Generates a responsive and modern HTML email content from summarized articles."""
+    
+    if articles is None or len(articles) == 0:
+        return "<html><body><p>No articles available.</p></body></html>"
+    
     
     # HTML header and global styles
     contenu_html = """<!DOCTYPE html>
@@ -48,10 +54,16 @@ def generate_email(articles):
             importance_bg = "#feebc8"
             importance_color = "#c08021"
 
-        summary= article.summary if article.summary else "No summary available."
-        category = article.category if article.category else "General"
-        importance = article.importance if article.importance else "0"
+        summary= escape(article.summary) if article.summary else "No summary available."
+        category = escape(article.category) if article.category else "General"
+        importance = escape(article.importance) if article.importance else "0"
         title = escape(article.title) if article.title else "No title available."
+        url = article.url or ""
+        parsed_url = urlparse(url)
+        if parsed_url.scheme in ["http", "https"] and parsed_url.netloc:
+            url = escape(url, quote=True)
+        else:
+            url = ""
 
         contenu_html += f"""
                             <!-- Article Card -->
@@ -86,7 +98,7 @@ def generate_email(articles):
                                         <table role="presentation" cellspacing="0" cellpadding="0" border="0">
                                             <tr>
                                                 <td style="border-radius: 4px; background-color: #3182ce;">
-                                                    <a href="{article.url}" target="_blank" style="padding: 8px 14px; display: inline-block; color: #ffffff; font-size: 13px; font-weight: 600; text-decoration: none; border-radius: 4px;">
+                                                    <a href="{url}" target="_blank" style="padding: 8px 14px; display: inline-block; color: #ffffff; font-size: 13px; font-weight: 600; text-decoration: none; border-radius: 4px;">
                                                         Read full article &rarr;
                                                     </a>
                                                 </td>

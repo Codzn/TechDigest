@@ -1,4 +1,3 @@
-from collectors.news_collector import get_news
 from model.Article import Article
 import logging
 import re

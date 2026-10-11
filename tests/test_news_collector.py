@@ -1,5 +1,4 @@
 from collectors.news_collector import get_news
-import json
 
 from unittest.mock import patch, MagicMock, Mock
 

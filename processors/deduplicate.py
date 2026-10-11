@@ -1,4 +1,4 @@
-from .filtrage import clean_text, filter_news
+from .filtrage import clean_text
 
 def normalize_title(title):
     """

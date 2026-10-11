@@ -2,10 +2,8 @@ from google import genai
 from google.genai import types
 import os
 from dotenv import load_dotenv
-from collectors.news_collector import get_news
-from model.Article import Article
 from ia.ArticleIaGuide import ArticleIaGuide
-import time 
+import time
 import logging
 
 """
@@ -60,7 +58,7 @@ def summarize_article(unique_articles):
                     break  # Sortir de la boucle si le quota est dépassé
                 if i < 2:  # Si ce n'est pas la dernière tentative
                     time.sleep(2 ** i)  # Attendre exponentiellement plus longtemps après chaque échec
-                    print(f"Erreur lors de la génération du résumé pour l'article '{article.title}': {e}")
+                    logging.warning(f"Erreur lors de la génération du résumé pour l'article '{article.title}': {e}")
 
         if not success:
             if quota_exceeded:
@@ -79,9 +77,9 @@ def summarize_article(unique_articles):
             article.category = donnes_ia.category
             article.importance = donnes_ia.importance
 
-            print(f"Résumé de l'article '{article.title}':\n{article.summary}\n")
+            logging.info(f"Résumé de l'article '{article.title}':\n{article.summary}\n")
         else:
-            print(f"Erreur : L'IA a renvoyé une réponse vide pour l'article '{article.title}'.")
+            logging.error(f"Erreur : L'IA a renvoyé une réponse vide pour l'article '{article.title}'.")
 
             
     return unique_articles

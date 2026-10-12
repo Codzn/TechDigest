@@ -1,159 +1,69 @@
-TechDigest
+# TechDigest
 
-TechDigest is a Python technology-watch script. It retrieves news, keeps articles relevant to information systems and digital transformation, removes duplicates, summarizes them with Gemini, and sends an HTML digest by email.
+**An automated technology intelligence pipeline built with Python, NewsAPI, Gemini, and GitHub Actions.**
 
-The project is designed as a simple pipeline: each module has one focused responsibility and `main.py` orchestrates the complete flow.
+TechDigest collects technology news, filters articles relevant to information systems and digital transformation, removes duplicates, generates AI-powered summaries, and sends an HTML newsletter by email.
 
-Goal
+The project demonstrates a modular Python application integrating external APIs, data processing, AI-based content enrichment, automated testing, and scheduled execution.
 
-Receive a curated email containing articles about artificial intelligence, cloud computing, cybersecurity, ERP/CRM/PLM, Industry 4.0, digital twins, and related technology topics.
+## Objectives
 
-Architecture
+The main objective is to automate technology monitoring across topics relevant to information systems and digital transformation, including:
 
+- Artificial intelligence and machine learning
+- Cloud computing
+- Cybersecurity
+- Data and analytics
+- Enterprise Resource Planning (ERP)
+- Customer Relationship Management (CRM)
+- Product Lifecycle Management (PLM)
+- Industry 4.0 and digital twins
+- Industrial automation and connected systems
+
+The application transforms raw news data into a curated email digest, reducing the effort required to monitor technology developments.
+
+## Architecture
+
+TechDigest follows a modular processing pipeline.
+
+```text
 NewsAPI
-  -> get_news()
-  -> filter_news()
-  -> remove_duplicates()
-  -> summarize_article()
-  -> generate_email()
-  -> envoyer_veille_technologique()
-  -> e-mail HTML
-
-
-Module Responsibility
-
-Module -> Rôle 
-
-collectors/news_collector.py -> Retrieves articles from NewsAPI through get_news().
-
-processors/filtrage.py -> Cleans titles and descriptions, calculates a relevance score, and produces `Article` objects with `filter_news()`.
-
-processors/duplicate.py -> Compares titles with Jaccard similarity and retains the highest-scored article when a duplicate is found.
-
-model/Article.py -> Defines the `Article` dataclass: title, description, URL, score, summary, category, and importance.
-
-ia/summarizer.py -> Calls Gemini to generate a French summary, category, and importance, then enriches each `Article`.
-
-ia/ArticleIaGuide.py -> Defines the Pydantic schema expected from Gemini's structured response.
-
-mail/email_generator.py -> Converts enriched articles into HTML through `generate_email()`.
-
-mail/email_sender.py -> Sends the HTML content through Gmail SMTP with `envoyer_veille_technologique()`.
-
-main.py -> Runs the pipeline in the correct order.
-
-Pipeline
-
-1. `get_news()` retrieves raw data from NewsAPI.
-2. `filter_news()` skips articles without a title or description, normalizes text, and calculates a relevance score from weighted keywords.
-3. Only articles whose score exceeds the threshold defined in `filtrage.py` are kept. Keywords found in a title carry more weight than keywords found in a description.
-4. `remove_duplicates()` compares title word sets using Jaccard similarity. For sufficiently similar titles, the article with the highest score is kept.
-5. `summarize_article()` enriches each article with `summary`, `category`, and `importance` through Gemini and a JSON response validated by Pydantic.
-6. `generate_email()` creates the HTML newsletter.
-7. `envoyer_veille_technologique()` sends the HTML through Gmail SMTP.
-
-Installation
-
-Requirements: Python 3.10 or newer, a NewsAPI account, a Gemini API key, and a Gmail account with an app password for SMTP sending.
-
-git clone <REPOSITORY_URL>
-cd TechDigest
-python -m venv .venv
-source .venv/bin/activate
-pip install requests python-dotenv google-genai pydantic
-
-On Windows, activate the virtual environment with:
-
-```powershell
-.venv\Scripts\Activate.ps1
+   |
+   v
+News collection
+   |
+   v
+Relevance filtering and scoring
+   |
+   v
+Duplicate detection
+   |
+   v
+AI summarization and classification
+   |
+   v
+HTML email generation
+   |
+   v
+Gmail SMTP delivery
 ```
 
-Configuration
+The application is orchestrated by `main.py`, while each module has a specific responsibility.
 
-Create a `.env` file in the project root. Never commit it.
+## Features
 
-```env
-# Adapt this name to the exact variable read by collectors/news_collector.py
-NEWS_API_KEY=your_newsapi_key
+- **News collection:** Retrieves articles through NewsAPI.
+- **Relevance filtering:** Uses normalized text, weighted keywords, and a configurable score threshold.
+- **Duplicate detection:** Compares article titles using Jaccard similarity.
+- **AI summarization:** Uses Google's Gemini API to generate French summaries.
+- **Content classification:** Enriches articles with a category and an importance level.
+- **Structured AI responses:** Uses Pydantic to validate the expected response schema.
+- **HTML newsletter:** Generates an HTML email containing the selected articles.
+- **Email delivery:** Sends the newsletter through Gmail SMTP.
+- **Automated execution:** Uses GitHub Actions to run the pipeline on a schedule.
+- **Automated testing:** Uses pytest to validate application behavior.
 
-CLE_GEMINI=your_gemini_key
-
-EMAIL_USER=your_address@gmail.com
-MDP_EMAIL=your_gmail_app_password
-EMAIL_DESTINATAIRE=recipient@example.com
-```
-
-`EMAIL_DESTINATAIRE` may be omitted when the intended behavior is to send the digest to the sender address: `email_sender.py` then falls back to `EMAIL_USER`.
-
-For Gmail, `MDP_EMAIL` must be an app password. Do not use the regular password of the account.
-
-Add at least the following to `.gitignore`:
-
-```gitignore
-.env
-.venv/
-__pycache__/
-```
-
-Usage
-
-From the project root:
-
-```bash
-python main.py
-```
-
-The script retrieves articles, runs the pipeline, generates HTML, and sends the email. Since SMTP sending has already been validated, it is recommended to send test digests to your own address first.
-
-Test the email without SMTP
-
-The HTML generator can be tested separately with sample `Article` objects:
-
-```python
-contenu_html = generate_email(articles)
-
-with open("test_email.html", "w", encoding="utf-8") as file:
-    file.write(contenu_html)
-```
-
-Then open `test_email.html` in a browser. URLs stored in `Article` objects must be raw URLs, such as `https://example.com/article`, not Markdown links.
-
-Diagnose an empty email
-
-An empty email almost always means that the list passed to `generate_email()` is empty. It does not prove that there were no technology articles: count articles at every pipeline boundary.
-
-Temporarily add this to `main.py`:
-
-data = get_news()
-print("NewsAPI:", len(data.get("articles", [])))
-
-filtered_articles = filter_news(data)
-print("After filtering:", len(filtered_articles))
-
-unique_articles = remove_duplicates(filtered_articles)
-print("After deduplication:", len(unique_articles))
-
-Then, before generating the email:
-
-summarized_articles = summarize_article(unique_articles)
-print("After Gemini:", len(summarized_articles))
-
-contenu_html = generate_email(summarized_articles)
-print("HTML length:", len(contenu_html))
-
-The first counter that reaches zero identifies the failing stage:
-
-| Observation | Likely cause | Focused check |
-| --- | --- | --- |
-| `NewsAPI: 0` | Query, API key, NewsAPI parameters, or NewsAPI limit. | Print the raw response, its status, and the `status`, `totalResults`, and `articles` fields. |
-| `After filtering: 0` | Threshold too high, keywords too restrictive, or missing titles/descriptions. | Print each article's title, normalized description, and score. |
-| `After deduplication: 0` | A problem in the deduplication logic. | Test `remove_duplicates()` with two sample articles that have unrelated titles: both must remain. |
-| `After Gemini: 0` | The function no longer returns the input list, or an error is hidden. | Check that `return unique_articles` is after the loop, not inside it. |
-| Positive counters but nearly empty HTML | The wrong list is passed to `generate_email()`, or the HTML loop is incorrect. | Print `len(summarized_articles)` immediately before `generate_email()`. |
-
-The most useful test is to print every article score before filtering. The current filter relies on specific expressions such as `artificial intelligence`, `cloud computing`, `cybersecurity`, `plm`, `erp`, or `digital twin`. A genuinely relevant technology article may be rejected when it uses different wording, such as a product or company name without one of these expressions.
-
-Project structure
+## Project Structure
 
 ```text
 TechDigest/
@@ -170,36 +80,263 @@ TechDigest/
 ├── mail/
 │   ├── email_generator.py
 │   └── email_sender.py
+├── tests/
 ├── main.py
-├── .env                 # local and ignored by Git
+├── requirements.txt
+├── .gitignore
 └── README.md
 ```
 
-Technologies
+The `.github/workflows/` directory contains the GitHub Actions workflow used for automated execution.
 
-- Python
-- NewsAPI
-- `requests` for HTTP requests
-- Regular expressions (`re`) for text cleaning and keyword scoring
-- `dataclasses` for the `Article` model
-- Jaccard similarity and `set` for deduplication
-- Gemini (`google-genai`) for summaries and structured classification
-- Pydantic to validate Gemini's JSON response
-- HTML and `email.mime` for the newsletter
-- Gmail SMTP (`smtplib`) for email delivery
-- `python-dotenv` for secret configuration
+## Processing Pipeline
 
-Possible improvements
+### 1. News collection
 
-- Add logging and explicit error handling for NewsAPI, Gemini, and SMTP failures.
-- Test filtering and deduplication with fixed article datasets.
-- Refine keywords, weights, and the threshold based on observed false positives and false negatives.
-- Improve the HTML newsletter design.
-- Add scheduled execution and avoid sending a digest when the selection is empty.
-- Limit the number of articles sent to control Gemini call time and cost.
+`collectors/news_collector.py`
 
-Known limitations
+Retrieves news articles from NewsAPI.
 
-- Keyword filtering does not understand article meaning: it can produce false positives and reject relevant articles written with different terminology.
-- Jaccard similarity compares title words only, so it cannot identify all duplicates phrased very differently.
-- Summarization and categorization depend on an external service and can fail or produce output that should be reviewed.
+### 2. Filtering and scoring
+
+`processors/filtrage.py`
+
+Normalizes article text, checks the required fields, and calculates a relevance score using weighted keywords.
+
+Articles must exceed the configured score threshold to be retained.
+
+### 3. Duplicate detection
+
+`processors/duplicate.py`
+
+Compares normalized article titles using Jaccard similarity.
+
+When sufficiently similar titles are found, the implementation retains the article with the highest relevance score.
+
+### 4. AI summarization and classification
+
+`ia/summarizer.py`
+
+Calls the Gemini API to generate a French summary, category, and importance level.
+
+The expected structured response is defined in `ia/ArticleIaGuide.py` and validated using Pydantic.
+
+The application includes retry and error-handling logic for API failures. However, successful summarization depends on Gemini service availability and the applicable API quotas.
+
+### 5. HTML generation
+
+`mail/email_generator.py`
+
+Generates an HTML newsletter from the processed articles.
+
+Fallback values can be used when optional article fields, such as a summary or category, are unavailable.
+
+### 6. Email delivery
+
+`mail/email_sender.py`
+
+Sends the generated HTML newsletter through Gmail SMTP.
+
+The sender account must be configured with the required environment variables and an appropriate Gmail app password.
+
+## Technologies
+
+| Technology | Purpose |
+|---|---|
+| Python | Application development |
+| NewsAPI | News collection |
+| Requests | HTTP communication |
+| Google Gemini API | Summarization and classification |
+| Pydantic | Structured response validation |
+| Dataclasses | Article data model |
+| Regular expressions | Text normalization |
+| Jaccard similarity | Duplicate detection |
+| HTML | Newsletter generation |
+| `smtplib` and `email.mime` | Email delivery |
+| `python-dotenv` | Local environment configuration |
+| pytest | Automated testing |
+| GitHub Actions | Scheduled execution and CI automation |
+
+## Installation
+
+### Requirements
+
+- Python 3.10 or newer
+- A NewsAPI API key
+- A Gemini API key
+- A Gmail account configured for SMTP access
+
+Clone the repository:
+
+```bash
+git clone <REPOSITORY_URL>
+cd TechDigest
+```
+
+Create and activate a virtual environment.
+
+**macOS / Linux**
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+```
+
+**Windows PowerShell**
+
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+```
+
+Install the dependencies:
+
+```bash
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+## Configuration
+
+### Local execution
+
+Create a `.env` file in the project root.
+
+```env
+NEWS_API_KEY=your_newsapi_key
+CLE_GEMINI=your_gemini_api_key
+
+EMAIL_USER=your_address@gmail.com
+MDP_EMAIL=your_gmail_app_password
+EMAIL_DESTINATAIRE=recipient@example.com
+```
+
+Use the exact variable names expected by the corresponding modules.
+
+`EMAIL_DESTINATAIRE` can be omitted if the application is configured to fall back to `EMAIL_USER`.
+
+For Gmail SMTP, use an app password when required. Do not use your regular Gmail account password.
+
+**Never commit `.env` or any real credentials to GitHub.**
+
+### GitHub Actions secrets
+
+For scheduled execution, configure the following repository secrets under:
+
+`Settings → Secrets and variables → Actions`
+
+| Secret | Purpose |
+|---|---|
+| `NEWS_API_KEY` | NewsAPI authentication |
+| `CLE_GEMINI` | Gemini API authentication |
+| `EMAIL_USER` | Gmail sender account |
+| `MDP_EMAIL` | Gmail SMTP app password |
+| `EMAIL_DESTINATAIRE` | Newsletter recipient |
+
+The workflow must map these secrets to the environment variable names expected by the application.
+
+## Usage
+
+Run the complete pipeline locally:
+
+```bash
+python main.py
+```
+
+The application collects articles, filters them, removes duplicates, attempts AI enrichment, generates the HTML newsletter, and sends the email.
+
+The newsletter's content depends on the articles returned by NewsAPI, the filtering rules, the availability of Gemini, and the applicable API quotas.
+
+## Testing
+
+Run the test suite:
+
+```bash
+pytest
+```
+
+The tests should validate application behavior without depending unnecessarily on live external APIs.
+
+External service availability, API quotas, and SMTP delivery should be verified separately when performing an end-to-end test.
+
+## Automated Execution
+
+TechDigest uses GitHub Actions for automated execution.
+
+The workflow supports:
+
+- Scheduled execution
+- Manual execution through `workflow_dispatch`
+- Dependency installation
+- Static checks with Flake8
+- Automated tests with pytest
+- Execution of `main.py`
+
+The current schedule is configured in the workflow's cron expression.
+
+For example:
+
+```yaml
+on:
+  schedule:
+    - cron: "0 8 * * 1"
+  workflow_dispatch:
+```
+
+This example runs every Monday at 08:00 UTC, subject to GitHub Actions scheduling delays.
+
+To change the frequency, update the cron expression in the workflow file.
+
+Execution results and logs are available in the repository's **Actions** tab.
+
+A successful workflow should confirm that the required steps completed successfully, including email delivery. Logging an error without propagating the failure may otherwise allow a workflow to appear successful.
+
+## Reliability and Error Handling
+
+TechDigest depends on external services, so a successful execution cannot be guaranteed on every run.
+
+Potential failure scenarios include:
+
+- NewsAPI errors or request limits
+- Gemini service unavailability
+- Gemini rate limits and quota exhaustion
+- Invalid or incomplete AI responses
+- SMTP connection interruptions
+- Email delivery or spam-filtering issues
+
+Gemini may return HTTP 503 when the service is temporarily overloaded or HTTP 429 when a rate limit or quota is exceeded.
+
+The application includes retry and error-handling logic, but these mechanisms cannot eliminate external service failures.
+
+Future reliability improvements include better recovery strategies, delivery verification, and more explicit reporting of partial failures.
+
+## Security
+
+- API keys and SMTP credentials are stored in environment variables.
+- Local credentials are kept in `.env`, which must be excluded from version control.
+- GitHub Actions credentials are configured through repository secrets.
+- Credentials must never be written to application logs.
+- The SMTP configuration uses encrypted communication with Gmail.
+
+## Known Limitations
+
+- Keyword-based filtering may miss relevant articles that use unexpected terminology.
+- Jaccard similarity operates on article titles and cannot identify every semantic duplicate.
+- AI-generated summaries may be incomplete or inaccurate and should not be treated as authoritative.
+- Gemini service availability and quotas can limit the number of articles enriched during a run.
+- SMTP acceptance does not guarantee inbox delivery; emails may be delayed, rejected, or classified as spam.
+- Scheduled GitHub Actions executions may be delayed.
+
+## Future Improvements
+
+Potential extensions include:
+
+- More robust handling of temporary API failures
+- Improved observability and error reporting
+- Better evaluation of filtering precision and recall
+- Semantic search using embeddings
+- Improved newsletter customization
+- Cloud deployment using AWS Lambda
+- Infrastructure as Code with Terraform
+- Automated Cloud deployment through CI/CD
+

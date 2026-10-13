@@ -15,21 +15,44 @@ def main():
     """
     Fonction principale qui orchestre le processus de collecte, filtrage, déduplication, résumé et envoi d'articles.
     """
-    news = get_news()
-    if not news["articles"]:
-        logging.error("No news articles found.")
-        return
-    
-    logging.info(f"Fetched {len(news['articles'])} articles.")
-    cleaned_news = filter_news(news)
-    sorted_news = articles_sorted_by_score(cleaned_news)
-    # Supprimer les doublons
-    unique_articles = remove_duplicates(sorted_news)
-    MAX_ARTICLES = 4
-    top_articles = unique_articles[:MAX_ARTICLES]
-    summarized_articles = summarize_article(top_articles)
-    html_content = generate_email(summarized_articles)
-    envoyer_veille_technologique(html_content)
+    try:
+        news = get_news()
+        if not news["articles"]:
+            logging.error("No news articles found.")
+            return
+        
+        logging.info(f"Fetched {len(news['articles'])} articles.")
+        
+        cleaned_news = filter_news(news)
+        if not cleaned_news:
+            logging.warning("No articles left after filtering.")
+            return
+        
+        sorted_news = articles_sorted_by_score(cleaned_news)
+        unique_articles = remove_duplicates(sorted_news)
+        
+        if not unique_articles:
+            logging.warning("No unique articles found after deduplication.")
+            return
+        
+        # Selectionner les 4 articles les plus pertinents
+        MAX_ARTICLES = 4
+        top_articles = unique_articles[:MAX_ARTICLES]
+        logging.info(f"Selected top {len(top_articles)} articles for summarization.")
+        
+        summarized_articles = summarize_article(top_articles)
+        if not summarized_articles:
+            logging.warning("No articles were summarized.")
+            return
+        html_content = generate_email(summarized_articles)
+        if not html_content:
+            logging.error("Failed to generate email content.")
+            return
+        envoyer_veille_technologique(html_content)
+        logging.info("Pipeline TechDigest completed.")
+    except Exception:
+        logging.exception("An error occurred during the TechDigest pipeline.")
+        raise
 
 if __name__ == "__main__":
     main()

@@ -71,7 +71,7 @@ TechDigest/
 │   └── news_collector.py
 ├── processors/
 │   ├── filtrage.py
-│   └── duplicate.py
+│   └── deduplicate.py
 ├── ia/
 │   ├── summarizer.py
 │   └── ArticleIaGuide.py
@@ -229,9 +229,9 @@ For scheduled execution, configure the following repository secrets under:
 |---|---|
 | `NEWS_API_KEY` | NewsAPI authentication |
 | `CLE_GEMINI` | Gemini API authentication |
-| `EMAIL_USER` | Gmail sender account |
-| `MDP_EMAIL` | Gmail SMTP app password |
-| `EMAIL_DESTINATAIRE` | Newsletter recipient |
+| `EMAIL_SENDER` | Gmail sender account |
+| `PASS_EMAIL` | Gmail SMTP app password |
+| `RECIPIENT_EMAIL` | Newsletter recipient |
 
 The workflow must map these secrets to the environment variable names expected by the application.
 

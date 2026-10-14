@@ -21,18 +21,20 @@ def summarize_article(unique_articles):
     Récupère : Les articles filtrés dans une liste en fonction des mots-clés définis dans SI_KEYWORDS.
     Retour : Un résumé des articles sous forme de texte. 
     """
-    client = genai.Client(api_key=os.getenv("CLE_GEMINI"))
+    api_key = os.getenv("CLE_GEMINI")
+
+    if not api_key:
+        raise ValueError("La clé d'API Gemini n'est pas définie dans les variables d'environnement.")
+    
+    client = genai.Client(api_key=api_key)
+    summarized_articles = []
 
     quota_exceeded = False  # Variable pour suivre si le quota est dépassé
     
     for article in unique_articles:
-        success = False  # Variable pour suivre si la génération a réussi
-     
-        if quota_exceeded:
-            break  # Sortir de la boucle si le quota est dépassé
         
         #On crée une nouvelle session de chat vide pour chaque article.
-        for i in range(3):  # Essayer jusqu'à 3 fois en cas d'erreur
+        for attempt in range(3):  # Essayer jusqu'à 3 fois en cas d'erreur
 
             try:
                 response = client.models.generate_content(
@@ -48,38 +50,33 @@ def summarize_article(unique_articles):
                     ),
                 )
 
-                success = True
+                if not response or not response.text:
+                    raise ValueError(f"Received empty response for article '{article.title}'.")
+
+                data = ArticleIaGuide.model_validate_json(response.text)
+
+                article.summary = data.summary
+                article.category = data.category
+                article.importance = data.importance
+
+                summarized_articles.append(article)
+                logging.info(f"Résumé de l'article '{article.title}'")
+
                 break  # Sortir de la boucle si la génération est réussie
 
             except Exception as e:
-                if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e): # Vérifier si l'erreur est un dépassement de quota
+                error_message = str(e)
+                if ("429" in error_message or "RESOURCE_EXHAUSTED" in error_message):  # Vérifier si l'erreur est un dépassement de quota
                     logging.error(f"Quota exceeded or rate limit reached: {e}. Retrying ...")
-                    quota_exceeded = True
-                    break  # Sortir de la boucle si le quota est dépassé
-                if i < 2:  # Si ce n'est pas la dernière tentative
-                    time.sleep(2 ** i)  # Attendre exponentiellement plus longtemps après chaque échec
-                    logging.warning(f"Erreur lors de la génération du résumé pour l'article '{article.title}': {e}")
+                    return summarized_articles  # Retourner les articles déjà résumés avant le dépassement de quota
+                if attempt < 2:  # Si ce n'est pas la dernière tentative
+                    delay = 2 ** attempt  # Attendre exponentiellement plus longtemps après chaque échec
+                    logging.warning(f"Erreur lors de la génération du résumé pour l'article '{article.title}': {e}. Retrying in {delay} seconds...")
+                    time.sleep(delay)
+                else:
+                    logging.exception(f"Failed to generate summary for article '{article.title}' after 3 attempts: {e}")
 
-        if not success:
-            if quota_exceeded:
-                logging.error(f"Quota exceeded. Stopping further processing.")
-                break  # Sortir de la boucle si le quota est dépassé
-            logging.error(f"Failed to generate summary for article '{article.title}' after 3 attempts.")
-            continue  # Passer à l'article suivant si la génération a échoué après 3 tentatives
-
-        json_brut = response.text
-                
-        if json_brut:
-            # On force Pydantic à valider le JSON brut en utilisant le modèle ArticleIaGuide
-            donnes_ia = ArticleIaGuide.model_validate_json(json_brut)
-            #On range les données de l'article à partir de la réponse du modèle.
-            article.summary = donnes_ia.summary
-            article.category = donnes_ia.category
-            article.importance = donnes_ia.importance
-
-            logging.info(f"Résumé de l'article '{article.title}':\n{article.summary}\n")
-        else:
-            logging.error(f"Erreur : L'IA a renvoyé une réponse vide pour l'article '{article.title}'.")
+    logging.info(f"Summarized {len(summarized_articles)} out of {len(unique_articles)} articles.")
 
             
     return unique_articles

@@ -38,5 +38,6 @@ def envoyer_veille_technologique(contenu_html: str):
             logging.info("Envoi du message...")
             server.sendmail(email_sender, recipient_email, msg.as_string())
         logging.info(f"E-mail envoyé avec succès à {recipient_email}.")
-    except Exception as e:
-        logging.error(f"Erreur lors de l'envoi de l'e-mail : {e}")
+    except Exception:
+        logging.error("Erreur lors de l'envoi de l'e-mail.")
+        raise # Re-raise the exception to be handled by the calling function

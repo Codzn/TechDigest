@@ -53,7 +53,7 @@ def summarize_article(unique_articles):
                 if not response or not response.text:
                     raise ValueError(f"Received empty response for article '{article.title}'.")
 
-                data = ArticleIaGuide.model_validate_json(response.text)
+                data = ArticleIaGuide.model_validate_json(response.text) # Valider et convertir la réponse JSON en un objet ArticleIaGuide
 
                 article.summary = data.summary
                 article.category = data.category

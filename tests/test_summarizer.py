@@ -14,7 +14,7 @@ def test_summarize_article():
     fake_response.text = (
         '{"summary": "Une entreprise adopte une solution d\'IA.",'
         '"category": "Intelligence artificielle",'
-        '"importancee": "Élevée"}'
+        '"importance": "Élevée"}'
     )
 
     # Patch the requests.get method to return the fake response

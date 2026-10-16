@@ -19,9 +19,9 @@ def test_summarize_article():
 
     # Patch the requests.get method to return the fake response
     with patch("ia.summarizer.genai.Client") as mock_client:
-        mock_client.return_value.get.return_value = fake_response
+        mock_client.return_value.models.generate_content.return_value = fake_response
 
-        result = summarize_article({article})
+        result = summarize_article([article])
 
         # Assert the expected values
     assert len(result) == 1

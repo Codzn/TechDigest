@@ -19,7 +19,9 @@ def test_summarize_article():
 
     # Patch the requests.get method to return the fake response
     with patch("ia.summarizer.genai.Client") as mock_client:
-        mock_client.return_value.models.generate_content.return_value = fake_response
+
+        fake_client = mock_client.return_value
+        fake_client.models.generate_content.return_value = fake_response
 
         result = summarize_article([article])
 
@@ -29,5 +31,9 @@ def test_summarize_article():
     assert article.summary == "Une entreprise adopte une solution d'IA."
     assert article.category == "Intelligence artificielle"
     assert article.importance == "Élevée"
+    assert (
+    mock_client.return_value.models.generate_content.return_value
+    is fake_response
+)
 
     mock_client.return_value.models.generate_content.assert_called_once()

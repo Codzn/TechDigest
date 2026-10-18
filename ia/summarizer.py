@@ -28,8 +28,6 @@ def summarize_article(unique_articles):
     
     client = genai.Client(api_key=api_key)
     summarized_articles = []
-
-    quota_exceeded = False  # Variable pour suivre si le quota est dépassé
     
     for article in unique_articles:
         
@@ -79,4 +77,4 @@ def summarize_article(unique_articles):
     logging.info(f"Summarized {len(summarized_articles)} out of {len(unique_articles)} articles.")
 
             
-    return unique_articles
+    return summarized_articles

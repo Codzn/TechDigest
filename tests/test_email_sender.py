@@ -1,33 +1,38 @@
-from model.Article import Article
-from mail.email_generator import generate_email
+from unittest.mock import patch
+
 from mail.email_sender import envoyer_veille_technologique
 
-article1 = Article(
-    title="Test Article",
-    summary="This is a test article.",
-    category="Technology",
-    importance="High",
-    url="https://example.com/test-article"
-)
+def test_email_sending(monkeypatch):
+    # Configuration fictive, uniquement pour le test
+    monkeypatch.setenv("EMAIL_SENDER", "expediteur@example.com")
+    monkeypatch.setenv("PASS_EMAIL", "mot-de-passe-fictif")
+    monkeypatch.setenv("RECIPIENT_EMAIL", "destinataire@example.com")
 
-article2 = Article(
-    title="Another Test Article",
-    summary="This is another test article.",
-    category="Science",
-    importance="Medium",
-    url="https://example.com/another-test-article"
-)
+    contenu_html = "<h1>Actualité IA</h1>"
 
-article3 = Article(
-    title="Third Test Article",
-    summary="This is the third test article.",
-    category="Health",
-    importance="Low",
-    url="https://example.com/third-test-article"
-)
+    with patch("mail.email_sender.smtplib.SMTP_SSL") as mock_smtp:
 
-articles = [article1, article2, article3]
+        # Récupère le faux serveur utilisé par le bloc with
+        mock_server = mock_smtp.return_value.__enter__.return_value
 
-contenu_html = generate_email(articles)
+        # Exécute la fonction à tester
+        envoyer_veille_technologique(contenu_html)
 
-envoyer_veille_technologique(contenu_html)
+        # Vérifie la connexion au serveur
+        mock_smtp.assert_called_once_with("smtp.gmail.com", 465)
+
+        # Vérifie l'authentification
+        mock_server.login.assert_called_once_with(
+            "expediteur@example.com",
+            "mot-de-passe-fictif",
+        )
+
+        # Vérifie l'envoi du message
+        mock_server.sendmail.assert_called_once()
+
+        # Récupère les arguments transmis à sendmail()
+        args = mock_server.sendmail.call_args
+
+
+        assert args[0] == "expediteur@example.com"
+        assert args[1] == "destinataire@example.com"

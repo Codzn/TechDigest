@@ -86,7 +86,7 @@ def summarize_article_continue_after_failure(monkeypatch):
         assert generate_content.call_count == 4
 
 def test_summarize_article_stops_on_quota_exceeded(monkeypatch):
-    
+
     monkeypatch.setenv("CLE_GEMINI", "fake-api-key")
 
     article_success = Article(

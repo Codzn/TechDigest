@@ -2,7 +2,10 @@ from model.Article import Article
 from unittest.mock import patch, Mock
 from ia.summarizer import summarize_article
 
-def test_summarize_article():
+def test_summarize_article(monkeypatch):
+
+    monkeypatch.setenv("CLE_GEMINI", "fake_api_key")
+
     # Créez un article de test
     article = Article(
         title="L'IA dans les entreprises",

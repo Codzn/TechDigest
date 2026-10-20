@@ -18,6 +18,9 @@ def test_email_sending(monkeypatch):
         # Exécute la fonction à tester
         envoyer_veille_technologique(contenu_html)
 
+    
+        print("Appels SMTP :", mock_smtp.call_args_list)
+
         # Vérifie la connexion au serveur
         mock_smtp.assert_called_once_with("smtp.gmail.com", 465)
 
@@ -31,7 +34,7 @@ def test_email_sending(monkeypatch):
         mock_server.sendmail.assert_called_once()
 
         # Récupère les arguments transmis à sendmail()
-        args = mock_server.sendmail.call_args
+        args = mock_server.sendmail.call_args.args
 
 
         assert args[0] == "expediteur@example.com"

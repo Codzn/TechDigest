@@ -65,7 +65,7 @@ def summarize_article(unique_articles):
             except Exception as e:
                 error_message = str(e)
                 if ("429" in error_message or "RESOURCE_EXHAUSTED" in error_message):  # Vérifier si l'erreur est un dépassement de quota
-                    logging.error(f"Quota exceeded or rate limit reached: {e}. Retrying ...")
+                    logging.error(f"Quota exceeded or rate limit reached: {e}.")
                     return summarized_articles  # Retourner les articles déjà résumés avant le dépassement de quota
                 if attempt < 2:  # Si ce n'est pas la dernière tentative
                     delay = 2 ** attempt  # Attendre exponentiellement plus longtemps après chaque échec

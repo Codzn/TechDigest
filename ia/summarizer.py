@@ -58,7 +58,7 @@ def summarize_article(unique_articles):
                 article.importance = data.importance
 
                 summarized_articles.append(article)
-                logging.info(f"Résumé de l'article '{article.title}'")
+                logging.info(f"Resume of the article '{article.title}'")
 
                 break  # Sortir de la boucle si la génération est réussie
 
@@ -69,7 +69,7 @@ def summarize_article(unique_articles):
                     return summarized_articles  # Retourner les articles déjà résumés avant le dépassement de quota
                 if attempt < 2:  # Si ce n'est pas la dernière tentative
                     delay = 2 ** attempt  # Attendre exponentiellement plus longtemps après chaque échec
-                    logging.warning(f"Erreur lors de la génération du résumé pour l'article '{article.title}': {e}. Retrying in {delay} seconds...")
+                    logging.warning(f"Error during the generation of the resume '{article.title}': {e}. Retrying in {delay} seconds...")
                     time.sleep(delay)
                 else:
                     logging.exception(f"Failed to generate summary for article '{article.title}' after 3 attempts: {e}")

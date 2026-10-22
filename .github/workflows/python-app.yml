@@ -35,11 +35,11 @@ jobs:
       run: |
         pytest
     
-   # - name: Run TechDigest
-    #  run: python main.py
-     # env:
-      #  NEWS_API: ${{ secrets.NEWS_API }}
-       # CLE_GEMINI: ${{ secrets.CLE_GEMINI }}
-        #EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
-        #PASS_EMAIL: ${{ secrets.PASS_EMAIL }}
-        #RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
+    - name: Run TechDigest
+      run: python main.py
+      env:
+        NEWS_API: ${{ secrets.NEWS_API }}
+        CLE_GEMINI: ${{ secrets.CLE_GEMINI }}
+        EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
+        PASS_EMAIL: ${{ secrets.PASS_EMAIL }}
+        RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}

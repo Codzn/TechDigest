@@ -13,10 +13,9 @@ def envoyer_veille_technologique(contenu_html: str):
     """
     # Retrieving environment variables for email sending
     email_sender = os.getenv("EMAIL_SENDER", "")
-    pass_email = os.getenv("PASS_EMAIL", "")
+    pass_email = os.getenv("PASS_EMAIL")
     recipient_email = os.getenv("RECIPIENT_EMAIL", email_sender)  # If RECIPIENT_EMAIL is not defined, the email is sent to the sender's address.
 
-    # 2. Creating the email message
     msg = MIMEMultipart()
     msg['From'] = email_sender
     msg['To'] = recipient_email

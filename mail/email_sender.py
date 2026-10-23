@@ -28,15 +28,15 @@ def envoyer_veille_technologique(contenu_html: str):
         return
     
     try:
-        logging.info("Connexion au serveur SMTP...")
+        logging.info("Connecting to the SMTP server...")
         with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
-            logging.info("Connexion SMTP établie.")
+            logging.info("SMTP connection established.")
             logging.info("Authentification SMTP...")
             server.login(email_sender, pass_email)
-            logging.info("Authentification réussie.")
-            logging.info("Envoi du message...")
+            logging.info("Authentification successfull.")
+            logging.info("Sending the mail...")
             server.sendmail(email_sender, recipient_email, msg.as_string())
-        logging.info(f"E-mail envoyé avec succès à {recipient_email}.")
+        logging.info(f"E-mail successfully send to {recipient_email}.")
     except smtplib.SMTPAuthenticationError as e:
             logging.exception("SMTP authentification failure",
                               e.smtp_code,
@@ -45,5 +45,5 @@ def envoyer_veille_technologique(contenu_html: str):
                               else e.smtp_error)
             raise
     except Exception:
-        logging.error("Erreur lors de l'envoi de l'e-mail.")
+        logging.error("Error while sending the email.")
         raise # Re-raise the exception to be handled by the calling function

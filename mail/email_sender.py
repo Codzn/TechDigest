@@ -37,6 +37,13 @@ def envoyer_veille_technologique(contenu_html: str):
             logging.info("Envoi du message...")
             server.sendmail(email_sender, recipient_email, msg.as_string())
         logging.info(f"E-mail envoyé avec succès à {recipient_email}.")
+    except smtplib.SMTPAuthenticationError as e:
+            logging.exception("SMTP authentification failure",
+                              e.smtp_code,
+                              e.smtp_error.decode(errors="replace")
+                              if isinstance(e.smtp_error, bytes)
+                              else e.smtp_error)
+            raise
     except Exception:
         logging.error("Erreur lors de l'envoi de l'e-mail.")
         raise # Re-raise the exception to be handled by the calling function

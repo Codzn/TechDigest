@@ -29,9 +29,14 @@ def envoyer_veille_technologique(contenu_html: str):
     
     try:
         logging.info("Connecting to the SMTP server...")
-        with smtplib.SMTP_SSL('smtp.gmail.com', 587) as server:
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465, timeout=30) as server:
+            server.set_debuglevel(1)
             logging.info("SMTP connection established.")
             logging.info("Authentification SMTP...")
+            logging.info("Sender configured: %s | Password configured: %s",
+                         bool(email_sender),
+                         bool(pass_email),
+                         )
             server.login(email_sender, pass_email)
             logging.info("Authentification successfull.")
             logging.info("Sending the mail...")
@@ -45,5 +50,5 @@ def envoyer_veille_technologique(contenu_html: str):
                               else e.smtp_error) """
             raise
     except Exception:
-        logging.error("Error while sending the.")
+        logging.error("Error while connecting to the server.")
         raise # Re-raise the exception to be handled by the calling function

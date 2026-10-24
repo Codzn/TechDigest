@@ -33,21 +33,13 @@ def envoyer_veille_technologique(contenu_html: str):
             server.set_debuglevel(1)
             logging.info("SMTP connection established.")
             logging.info("Authentification SMTP...")
-            logging.info("Sender configured: %s | Password configured: %s",
-                         bool(email_sender),
-                         bool(pass_email),
-                         )
             server.login(email_sender, pass_email)
             logging.info("Authentification successfull.")
             logging.info("Sending the mail...")
             server.sendmail(email_sender, recipient_email, msg.as_string())
         logging.info(f"E-mail successfully send to {recipient_email}.")
     except smtplib.SMTPAuthenticationError as e:
-            """logging.exception("SMTP authentification failure",
-                              e.smtp_code,
-                              e.smtp_error.decode(errors="replace")
-                              if isinstance(e.smtp_error, bytes)
-                              else e.smtp_error) """
+            logging.exception(e)
             raise
     except Exception:
         logging.error("Error while connecting to the server.")

@@ -22,7 +22,7 @@ def test_email_sending(monkeypatch):
         print("Appels SMTP :", mock_smtp.call_args_list)
 
         # Vérifie la connexion au serveur
-        mock_smtp.assert_called_once_with("smtp.gmail.com", 465, TimeoutError= 30)
+        mock_smtp.assert_called_once_with("smtp.gmail.com", 465, timeout= 30)
 
         # Vérifie l'authentification
         mock_server.login.assert_called_once_with(

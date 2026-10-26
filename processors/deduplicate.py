@@ -36,7 +36,7 @@ def remove_duplicates(filtered_news):
     for article1 in filtered_news:
         matching_indx = None
         for indx, article2 in enumerate(unique_articles): # Compare each article with the articles already in unique_articles
-            if jaccard_similarity(article1.title, article2.title) > 0.8:  # Adjust threshold as needed
+            if jaccard_similarity(article1.title, article2.title) > 0.5:  # Adjust threshold as needed
                 matching_indx = indx
         if matching_indx is None:
             unique_articles.append(article1)

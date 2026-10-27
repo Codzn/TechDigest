@@ -1,13 +1,30 @@
 from collectors.news_collector import get_news
+import requests
+import pytest
 
 from unittest.mock import patch, MagicMock, Mock
 
 @patch('collectors.news_collector.requests.get')
-def test_get_news(mock_get):
-    mock_get.side_effect = Exception("API request failed")
+def test_get_news_request_error(mock_get):
+    mock_get.side_effect = requests.exceptions.ConnectionError(
+        "Connection failed"
+    )
 
     result = get_news()
-    assert result == {"articles": []}
+
+    mock_get.assert_called_once()
+
+
+
+@patch('collectors.news_collector.requests.get')
+def test_get_news_unexpected_error(mock_get):
+    mock_get.side_effect = TypeError("Unexpected failure")
+
+    with pytest.raises(RuntimeError, match="Unexpected error while fetching news"):
+        get_news # type: ignore
+
+    mock_get.assert_called_once()
+
 
 @patch('collectors.news_collector.requests.get')
 def test_get_news_success(mock_get):

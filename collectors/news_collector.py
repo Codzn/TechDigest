@@ -46,7 +46,7 @@ def get_news():
         return data
     except requests.exceptions.RequestException as e:
         logging.error(f"Error fetching news: HTTP request failed")
-        raise RuntimeError("NewsAPI request failed") from None
+        raise RuntimeError("NewsAPI request failed") from e
     except Exception as e:
         logging.error(f"Unexpected error")
         raise RuntimeError("Unexpected error while fetching news.") from None

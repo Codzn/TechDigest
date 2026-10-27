@@ -43,11 +43,11 @@ def main():
         summarized_articles = summarize_article(top_articles)
         if not summarized_articles:
             logging.warning("No articles were summarized.")
-            return
+            raise RuntimeError("No articles were summarized; newsletter was not sent")
         html_content = generate_email(summarized_articles)
         if not html_content:
             logging.error("Failed to generate email content.")
-            return
+            raise RuntimeError("Failed to generate email content.")
         envoyer_veille_technologique(html_content)
         logging.info("Pipeline TechDigest completed.")
     except Exception:

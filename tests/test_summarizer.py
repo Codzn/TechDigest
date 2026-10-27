@@ -41,7 +41,7 @@ def test_summarize_article(monkeypatch):
 
     mock_client.return_value.models.generate_content.assert_called_once()
 
-def summarize_article_continue_after_failure(monkeypatch):
+def test_summarize_article_continue_after_failure(monkeypatch):
 
     monkeypatch.setenv("CLE_GEMINI", "fake_api_key")
 

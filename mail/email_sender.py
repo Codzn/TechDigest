@@ -25,12 +25,11 @@ def envoyer_veille_technologique(contenu_html: str):
 
     if not email_sender or not pass_email or not recipient_email:
         logging.error("Error: Missing email configuration in environment variables.")
-        return
+        raise ValueError ("Missing email configuration: check the required environment variables")
     
     try:
         logging.info("Connecting to the SMTP server...")
         with smtplib.SMTP_SSL('smtp.gmail.com', 465, timeout=30) as server:
-            server.set_debuglevel(1)
             logging.info("SMTP connection established.")
             logging.info("Authentification SMTP...")
             server.login(email_sender, pass_email)

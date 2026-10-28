@@ -1,4 +1,5 @@
 from unittest.mock import patch
+import pytest
 
 from mail.email_sender import envoyer_veille_technologique
 
@@ -39,3 +40,18 @@ def test_email_sending(monkeypatch):
 
         assert args[0] == "expediteur@example.com"
         assert args[1] == "destinataire@example.com"
+
+def test_missing_email_configuration_raises_value_error(monkeypatch):
+    monkeypatch.delenv("EMAIL_SENDER", raising=False)
+    monkeypatch.delenv("PASS_EMAIL", raising=False)
+    monkeypatch.delenv("RECIPIENT_EMAIL", raising=False)
+
+    contenu_html = "<h1>Actualité IA</h1>"
+
+    with pytest.raises(ValueError, match="Missing email configuration: check the required environment variables"):
+        envoyer_veille_technologique(contenu_html)
+
+
+
+
+    

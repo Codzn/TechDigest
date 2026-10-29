@@ -1,6 +1,6 @@
 from collectors.news_collector import get_news
 from mail.email_generator import generate_email
-from mail.email_sender import send_newsletter
+from mail.send_newsletter import send_newsletter
 from processors.deduplicate import remove_duplicates
 from processors.filtrage import filter_news, articles_sorted_by_score
 from ia.summarizer import summarize_article

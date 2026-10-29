@@ -1,7 +1,7 @@
 from unittest.mock import patch
 import pytest
 
-from mail.email_sender import send_newsletter
+from mail.send_newsletter import send_newsletter
 
 def test_send_newsletter(monkeypatch):
     # Configuration fictive, uniquement pour le test

@@ -1,9 +1,9 @@
 from unittest.mock import patch
 import pytest
 
-from mail.email_sender import envoyer_veille_technologique
+from mail.email_sender import send_newsletter
 
-def test_email_sending(monkeypatch):
+def test_send_newsletter(monkeypatch):
     # Configuration fictive, uniquement pour le test
     monkeypatch.setenv("EMAIL_SENDER", "expediteur@example.com")
     monkeypatch.setenv("PASS_EMAIL", "mot-de-passe-fictif")
@@ -17,7 +17,7 @@ def test_email_sending(monkeypatch):
         mock_server = mock_smtp.return_value.__enter__.return_value
 
         # Exécute la fonction à tester
-        envoyer_veille_technologique(contenu_html)
+        send_newsletter(contenu_html)
 
     
         print("Appels SMTP :", mock_smtp.call_args_list)
@@ -49,7 +49,7 @@ def test_missing_email_configuration_raises_value_error(monkeypatch):
     contenu_html = "<h1>Actualité IA</h1>"
 
     with pytest.raises(ValueError, match="Missing email configuration: check the required environment variables"):
-        envoyer_veille_technologique(contenu_html)
+        send_newsletter(contenu_html)
 
 
 

@@ -7,7 +7,7 @@ import logging
 
 dotenv.load_dotenv()
 
-def envoyer_veille_technologique(contenu_html: str):
+def send_newsletter(contenu_html: str):
     """
     Takes the AI-generated text and sends it via email to the address specified in the RECIPIENT_EMAIL environment variable.   
     """

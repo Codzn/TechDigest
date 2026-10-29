@@ -1,6 +1,6 @@
 from collectors.news_collector import get_news
 from mail.email_generator import generate_email
-from mail.email_sender import envoyer_veille_technologique
+from mail.email_sender import send_newsletter
 from processors.deduplicate import remove_duplicates
 from processors.filtrage import filter_news, articles_sorted_by_score
 from ia.summarizer import summarize_article
@@ -48,7 +48,7 @@ def main():
         if not html_content:
             logging.error("Failed to generate email content.")
             raise RuntimeError("Failed to generate email content.")
-        envoyer_veille_technologique(html_content)
+        send_newsletter(html_content)
         logging.info("Pipeline TechDigest completed.")
     except Exception:
         logging.exception("An error occurred during the TechDigest pipeline.")

@@ -11,7 +11,7 @@ def test_send_newsletter(monkeypatch):
 
     contenu_html = "<h1>Actualité IA</h1>"
 
-    with patch("mail.email_sender.smtplib.SMTP_SSL") as mock_smtp:
+    with patch("mail.send_newsletter.smtplib.SMTP_SSL") as mock_smtp:
 
         # Récupère le faux serveur utilisé par le bloc with
         mock_server = mock_smtp.return_value.__enter__.return_value

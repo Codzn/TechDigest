@@ -1,5 +1,19 @@
+# Secrets
 .env
 .env.*
-__pycache__
+
+# Python
+__pycache__/
 *.pyc
+.venv/
+venv/
+.pytest_cache/
+
+# Generated files
 *.log
+test_email.html
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/

@@ -8,10 +8,9 @@ import logging
 
 """
 Ma fonction reçoit un ensemble d'articles filtrés et renvoie un résumé de ces articles sous forme de texte.
-Elle utilise le modèle de génération de texte "gemini-1.5-flash" pour générer un résumé en français pour chaque article, en incluant le titre et la description de l'article. 
+Elle utilise le modèle de génération de texte "gemini-3.6-flash" pour générer un résumé en français pour chaque article, en incluant le titre et la description de l'article. 
 Le résumé est ensuite renvoyé sous forme de texte.
 
-Elle enverra ensuite un email contenant le résumé généré à l'adresse e-mail spécifiée dans la variable d'environnement EMAIL_DESTINATAIRE.
 """
 
 load_dotenv()

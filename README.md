@@ -79,11 +79,12 @@ TechDigest/
 │   └── Article.py
 ├── mail/
 │   ├── email_generator.py
-│   └── email_sender.py
+│   └── send_newsletter.py
 ├── tests/
 ├── main.py
 ├── requirements.txt
 ├── .gitignore
+├── LICENSE
 └── README.md
 ```
 
@@ -107,7 +108,7 @@ Articles must exceed the configured score threshold to be retained.
 
 ### 3. Duplicate detection
 
-`processors/duplicate.py`
+`processors/deduplicate.py`
 
 Compares normalized article titles using Jaccard similarity.
 
@@ -133,7 +134,7 @@ Fallback values can be used when optional article fields, such as a summary or c
 
 ### 6. Email delivery
 
-`mail/email_sender.py`
+`mail/send_newsletter.py`
 
 Sends the generated HTML newsletter through Gmail SMTP.
 
@@ -169,7 +170,7 @@ The sender account must be configured with the required environment variables an
 Clone the repository:
 
 ```bash
-git clone <REPOSITORY_URL>
+git clone https://github.com/Codzn/TechDigest.git
 cd TechDigest
 ```
 
@@ -203,17 +204,15 @@ pip install -r requirements.txt
 Create a `.env` file in the project root.
 
 ```env
-NEWS_API_KEY=your_newsapi_key
+NEWS_API=your_newsapi_key
 CLE_GEMINI=your_gemini_api_key
 
-EMAIL_USER=your_address@gmail.com
-MDP_EMAIL=your_gmail_app_password
-EMAIL_DESTINATAIRE=recipient@example.com
+EMAIL_SENDER=your_address@gmail.com
+PASS_EMAIL=your_gmail_app_password
+RECIPIENT_EMAIL=recipient@example.com
 ```
 
-Use the exact variable names expected by the corresponding modules.
-
-`EMAIL_DESTINATAIRE` can be omitted if the application is configured to fall back to `EMAIL_USER`.
+`RECIPIENT_EMAIL` is optional: if it is not set, the newsletter is sent to `EMAIL_SENDER`.
 
 For Gmail SMTP, use an app password when required. Do not use your regular Gmail account password.
 
@@ -227,13 +226,13 @@ For scheduled execution, configure the following repository secrets under:
 
 | Secret | Purpose |
 |---|---|
-| `NEWS_API_KEY` | NewsAPI authentication |
+| `NEWS_API` | NewsAPI authentication |
 | `CLE_GEMINI` | Gemini API authentication |
 | `EMAIL_SENDER` | Gmail sender account |
 | `PASS_EMAIL` | Gmail SMTP app password |
 | `RECIPIENT_EMAIL` | Newsletter recipient |
 
-The workflow must map these secrets to the environment variable names expected by the application.
+The workflow passes these secrets to the application as environment variables with the same names.
 
 ## Usage
 
@@ -318,6 +317,19 @@ Future reliability improvements include better recovery strategies, delivery ver
 - Credentials must never be written to application logs.
 - The SMTP configuration uses encrypted communication with Gmail.
 
+## What I Learned
+
+Building TechDigest end to end taught me much more than writing a single script:
+
+- **Designing a modular architecture.** I split the project into independent modules (collection, filtering, deduplication, AI summarization, email generation, delivery), each with one clear objective. This made each part easier to test, debug and improve without breaking the rest.
+- **Working with unreliable external services.** The Gemini API regularly answered with `503 Service Unavailable` or `429 Too Many Requests`. I learned not to give up after the first failure: each article is retried up to 3 times with an exponential backoff (1 s, then 2 s), and the pipeline stops cleanly and keeps the summaries already generated when the quota is exhausted.
+- **Measuring similarity between texts.** To detect the same news published by several outlets, I compute the **Jaccard similarity** between titles: the number of words they share divided by the total number of distinct words. Above 0.5, two articles are treated as duplicates and only the most relevant one is kept.
+- **Scoring relevance with simple calculations.** Each article receives a weighted score: keywords count double in the title, and a bonus is added when several keywords appear together. Only articles above a threshold are kept.
+- **Validating data.** Python dataclasses model an article, and Pydantic forces the AI to return a structured, validated JSON response (summary, category, importance) instead of free text.
+- **Testing without calling real services.** The test suite uses mocks for SMTP and the Gemini API, so it runs quickly and for free.
+- **Handling secrets properly.** API keys live in environment variables and GitHub Actions secrets. An early version wrote a log file containing a request URL with an API key, which taught me to never log credentials and to keep generated files out of version control.
+- **Automating with CI/CD.** A GitHub Actions workflow checks the code, runs the tests and sends the newsletter every Monday without any manual action.
+
 ## Known Limitations
 
 - Keyword-based filtering may miss relevant articles that use unexpected terminology.
@@ -340,3 +352,6 @@ Potential extensions include:
 - Infrastructure as Code with Terraform
 - Automated Cloud deployment through CI/CD
 
+## License
+
+This project is released under the [MIT License](LICENSE).

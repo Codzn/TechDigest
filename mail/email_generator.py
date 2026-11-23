@@ -28,7 +28,7 @@ def generate_email(articles):
                     <tr>
                         <td style="background-color: #1a202c; padding: 30px; text-align: center;">
                             <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 700; letter-spacing: 0.5px;">TechDigest</h1>
-                            <p style="color: #a0aec0; margin: 8px 0 0 0; font-size: 14px;">Your daily tech digest</p>
+                            <p style="color: #a0aec0; margin: 8px 0 0 0; font-size: 14px;">Your weekly tech digest</p>
                         </td>
                     </tr>
 

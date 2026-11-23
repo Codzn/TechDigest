@@ -5,7 +5,8 @@ name: TechDigest
 
 on:
   schedule:
-    - cron : "0 8 * * 1"
+    # Every Sunday at 08:00 UTC (09:00 in Paris in winter, 10:00 in summer)
+    - cron: "0 8 * * 0"
   workflow_dispatch: 
 
 

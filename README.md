@@ -1,6 +1,22 @@
 # TechDigest
 
+[![Tests](https://github.com/Codzn/TechDigest/actions/workflows/tests.yml/badge.svg)](https://github.com/Codzn/TechDigest/actions/workflows/tests.yml)
+![Python](https://img.shields.io/badge/python-3.10%2B-blue)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+
 **An automated technology intelligence pipeline built with Python, NewsAPI, Gemini, and GitHub Actions.**
+
+> 🇫🇷 Chaque dimanche matin, TechDigest m'envoie une courte newsletter avec les actualités tech les plus importantes de la semaine, résumées en français par une IA. Cinq minutes de lecture pour rester à jour.
+
+## Why I Built It
+
+There is far too much technology news to follow every day, and many important announcements slip by when you are busy. I wanted a short weekly briefing that keeps me up to date, both out of personal curiosity and because staying informed matters for my future career in information systems and digital transformation.
+
+The goal is not to save time but to **learn things I would never have gone looking for myself**: every Sunday, a five-minute read brings me a handful of carefully selected news stories, each summarised in French.
+
+<p align="center">
+  <img src="docs/newsletter.png" alt="Example of a TechDigest newsletter" width="520">
+</p>
 
 TechDigest collects technology news, filters articles relevant to information systems and digital transformation, removes duplicates, generates AI-powered summaries, and sends an HTML newsletter by email.
 
@@ -56,7 +72,7 @@ The application is orchestrated by `main.py`, while each module has a specific r
 - **Relevance filtering:** Uses normalized text, weighted keywords, and a configurable score threshold.
 - **Duplicate detection:** Compares article titles using Jaccard similarity.
 - **AI summarization:** Uses Google's Gemini API to generate French summaries.
-- **Content classification:** Enriches articles with a category and an importance level.
+- **Content classification:** Enriches articles with a category and an importance level (Faible, Moyenne or Élevée).
 - **Structured AI responses:** Uses Pydantic to validate the expected response schema.
 - **HTML newsletter:** Generates an HTML email containing the selected articles.
 - **Email delivery:** Sends the newsletter through Gmail SMTP.
@@ -80,6 +96,8 @@ TechDigest/
 ├── mail/
 │   ├── email_generator.py
 │   └── send_newsletter.py
+├── scripts/
+│   └── evaluate_filter.py
 ├── tests/
 ├── main.py
 ├── requirements.txt
@@ -105,6 +123,21 @@ Retrieves news articles from NewsAPI.
 Normalizes article text, checks the required fields, and calculates a relevance score using weighted keywords.
 
 Articles must exceed the configured score threshold to be retained.
+
+#### Measuring the filter quality
+
+To check that the filter keeps the right articles, I labelled 30 sample articles by hand as relevant or not (`data/test_articles.json`) and compared these labels with the filter's decisions:
+
+```bash
+python -m scripts.evaluate_filter
+```
+
+| Metric | Result | Meaning |
+|---|---|---|
+| Precision | **85%** | Of the articles kept, 85% were really relevant |
+| Recall | **89%** | Of the relevant articles, 89% were kept |
+
+The five mistakes are instructive. The filter sometimes keeps consumer news that merely mentions AI or the cloud (cloud gaming, football predictions), and it misses some industrial topics, such as digital twins or predictive maintenance, whose keywords have a low weight. A test fails if a future change brings precision or recall below 80%.
 
 ### 3. Duplicate detection
 
@@ -260,29 +293,21 @@ External service availability, API quotas, and SMTP delivery should be verified 
 
 ## Automated Execution
 
-TechDigest uses GitHub Actions for automated execution.
+TechDigest uses two GitHub Actions workflows:
 
-The workflow supports:
+- **Tests** (`.github/workflows/tests.yml`) runs on every push and pull request. It checks the code with Flake8, runs the pytest suite and evaluates the filter, without calling any paid API or sending any email.
+- **TechDigest** (`.github/workflows/python-app.yml`) runs the full pipeline on a schedule, and can also be started manually through `workflow_dispatch`.
 
-- Scheduled execution
-- Manual execution through `workflow_dispatch`
-- Dependency installation
-- Static checks with Flake8
-- Automated tests with pytest
-- Execution of `main.py`
-
-The current schedule is configured in the workflow's cron expression.
-
-For example:
+The newsletter is sent every Sunday morning:
 
 ```yaml
 on:
   schedule:
-    - cron: "0 8 * * 1"
+    - cron: "0 8 * * 0"
   workflow_dispatch:
 ```
 
-This example runs every Monday at 08:00 UTC, subject to GitHub Actions scheduling delays.
+This runs every Sunday at 08:00 UTC (09:00 in Paris in winter), subject to GitHub Actions scheduling delays.
 
 To change the frequency, update the cron expression in the workflow file.
 
@@ -326,9 +351,10 @@ Building TechDigest end to end taught me much more than writing a single script:
 - **Measuring similarity between texts.** To detect the same news published by several outlets, I compute the **Jaccard similarity** between titles: the number of words they share divided by the total number of distinct words. Above 0.5, two articles are treated as duplicates and only the most relevant one is kept.
 - **Scoring relevance with simple calculations.** Each article receives a weighted score: keywords count double in the title, and a bonus is added when several keywords appear together. Only articles above a threshold are kept.
 - **Validating data.** Python dataclasses model an article, and Pydantic forces the AI to return a structured, validated JSON response (summary, category, importance) instead of free text.
-- **Testing without calling real services.** The test suite uses mocks for SMTP and the Gemini API, so it runs quickly and for free.
+- **Testing without calling real services.** The test suite uses mocks for SMTP and the Gemini API, so it runs quickly and for free on every push.
+- **Evaluating my own work with numbers.** Labelling a small dataset by hand and measuring precision and recall showed me exactly where my keyword filter goes wrong, instead of relying on impressions.
 - **Handling secrets properly.** API keys live in environment variables and GitHub Actions secrets. An early version wrote a log file containing a request URL with an API key, which taught me to never log credentials and to keep generated files out of version control.
-- **Automating with CI/CD.** A GitHub Actions workflow checks the code, runs the tests and sends the newsletter every Monday without any manual action.
+- **Automating with CI/CD.** A GitHub Actions workflow checks the code, runs the tests and sends the newsletter every Sunday without any manual action.
 
 ## Known Limitations
 
@@ -345,7 +371,7 @@ Potential extensions include:
 
 - More robust handling of temporary API failures
 - Improved observability and error reporting
-- Better evaluation of filtering precision and recall
+- A larger labelled dataset to tune the keyword weights and improve precision
 - Semantic search using embeddings
 - Improved newsletter customization
 - Cloud deployment using AWS Lambda

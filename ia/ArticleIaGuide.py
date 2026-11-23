@@ -1,3 +1,5 @@
+from typing import Literal
+
 from pydantic import BaseModel, Field
 
 class ArticleIaGuide(BaseModel):
@@ -6,4 +8,6 @@ class ArticleIaGuide(BaseModel):
 
     category: str = Field(description="The category of the article.")
 
-    importance: str = Field(description="The importance of the article.")
+    importance: Literal["Faible", "Moyenne", "Élevée"] = Field(
+        description="The importance of the article for an Information Systems professional."
+    )

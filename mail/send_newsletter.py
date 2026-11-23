@@ -19,7 +19,7 @@ def send_newsletter(contenu_html: str):
     msg = MIMEMultipart()
     msg['From'] = email_sender
     msg['To'] = recipient_email
-    msg['Subject'] = "Actualité TechDigest de la veille"
+    msg['Subject'] = "TechDigest : votre veille tech de la semaine"
 
     msg.attach(MIMEText(contenu_html, 'html', 'utf-8'))
 

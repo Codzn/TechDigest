@@ -41,6 +41,8 @@ def summarize_article(unique_articles):
                         system_instruction="""You are an expert in Information Systems. Summarise the article in French in 1 paragraph of 4 to 6 sentences.
                                 Keep the important information, the context and the main consequences.
                                 The summary must be detailed enough for a person to understand the interest of the article without reading the original article.
+                                Also give a short category in French (for example: Intelligence artificielle, Cybersécurité, Cloud, Data, ERP / CRM, Industrie 4.0)
+                                and rate the importance of the article for an Information Systems professional.
                             """,
                         response_mime_type="application/json",
                         response_schema=ArticleIaGuide,
